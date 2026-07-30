@@ -11,10 +11,6 @@ numpy>=1.26
 openai>=1.40          # dùng chung cho OpenAI và OpenRouter (OpenRouter tương thích OpenAI API qua base_url riêng)
 google-generativeai>=0.7   # Gemini
 
-# Discord bot (client gọi backend)
-discord.py>=2.4
-httpx>=0.27
-
 # Frontend debug UI
 streamlit>=1.35
 requests>=2.31
