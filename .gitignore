@@ -2,8 +2,8 @@
 node_modules/
 *.env
 
-# docs
-/docs
+# docs (mọi vị trí, không chỉ /docs ở root)
+docs/
 
 # Python
 __pycache__/

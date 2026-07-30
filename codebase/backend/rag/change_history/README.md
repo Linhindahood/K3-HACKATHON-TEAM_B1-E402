@@ -30,6 +30,7 @@ tiếp theo.
 
 ## Index
 
+- [RAG runtime artifacts](rag-runtime-artifacts_2026-07-30_15-35-38.md)
 - [Grounded generator](grounded-generator_2026-07-30_15-30-17.md)
 - [Hybrid retrieval](hybrid-retrieval_2026-07-30_15-14-01.md)
 - [Resident dense retriever](resident-dense-retriever_2026-07-30_14-57-17.md)
