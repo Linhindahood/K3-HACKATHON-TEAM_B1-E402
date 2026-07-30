@@ -1,19 +1,18 @@
-"""Resident FAISS index and ordered chunk metadata."""
+"""Resident BM25S index and chunk metadata."""
 from __future__ import annotations
 
 from dataclasses import dataclass
 from functools import lru_cache
 from typing import Any
 
-import numpy as np
-
 from backend.rag.corpus import load_chunks
-from backend.rag.embedding_artifacts import load_embedding_artifacts
+from backend.rag.lexical_artifacts import load_lexical_artifact
+from backend.rag.query_processing import lexical_tokens
 
 
 @dataclass(frozen=True)
-class DenseStore:
-    index: Any
+class LexicalStore:
+    retriever: Any
     chunks: tuple[dict, ...]
     manifest: dict | None = None
 
@@ -21,21 +20,23 @@ class DenseStore:
     def chunk_count(self) -> int:
         return len(self.chunks)
 
-    def search(self, query_vector: np.ndarray, top_k: int) -> list[dict]:
-        vector = np.asarray(query_vector, dtype=np.float32)
-        if vector.ndim != 1 or vector.shape[0] != self.index.d:
-            raise ValueError("Query embedding dimension does not match FAISS index")
+    def search(self, query: str, top_k: int) -> list[dict]:
+        tokens = lexical_tokens(query)
         limit = min(max(top_k, 0), self.chunk_count)
-        if limit == 0:
+        if not tokens or limit == 0:
             return []
 
-        scores, ids = self.index.search(
-            np.ascontiguousarray(vector.reshape(1, -1)),
-            limit,
+        results = self.retriever.retrieve(
+            [tokens],
+            k=limit,
+            show_progress=False,
         )
         passages = []
-        for score, chunk_index in zip(scores[0], ids[0]):
-            if chunk_index < 0:
+        for chunk_index, score in zip(
+            results.documents[0],
+            results.scores[0],
+        ):
+            if score <= 0:
                 continue
             chunk = self.chunks[int(chunk_index)]
             passages.append(
@@ -51,8 +52,12 @@ class DenseStore:
 
 
 @lru_cache(maxsize=1)
-def get_dense_store() -> DenseStore:
-    """Keep the validated index and chunks alive for the process lifetime."""
+def get_lexical_store() -> LexicalStore:
+    """Keep the validated BM25 index and chunks alive for the process lifetime."""
     chunks = load_chunks()
-    _, index, manifest = load_embedding_artifacts(chunks)
-    return DenseStore(index=index, chunks=tuple(chunks), manifest=manifest)
+    retriever, manifest = load_lexical_artifact(chunks)
+    return LexicalStore(
+        retriever=retriever,
+        chunks=tuple(chunks),
+        manifest=manifest,
+    )

@@ -1,7 +1,6 @@
 """Offline preparation of the RAG corpus.
 
-Phase 1 deliberately stops at deterministic chunks and a manifest. Embedding
-and vector-index construction belong to the next approved phase.
+The command produces deterministic chunks plus dense and lexical indexes.
 """
 from __future__ import annotations
 
@@ -321,16 +320,25 @@ def build_index(chunks: list[dict]) -> tuple[Path, Path, Path]:
     return build_embedding_artifacts(chunks)
 
 
+def build_lexical_index(chunks: list[dict]) -> Path:
+    """Build the BM25S index from the same ordered chunks as dense search."""
+    from backend.rag.lexical_artifacts import build_lexical_artifact
+
+    return build_lexical_artifact(chunks)
+
+
 def main() -> None:
     documents = load_raw_documents()
     chunks = chunk_documents(documents)
     chunks_path, manifest_path = write_artifacts(documents, chunks)
     embeddings_path, index_path, embedding_manifest_path = build_index(chunks)
+    lexical_manifest_path = build_lexical_index(chunks)
     print(f"Wrote {len(chunks)} chunks to {chunks_path}")
     print(f"Wrote manifest to {manifest_path}")
     print(f"Wrote embeddings to {embeddings_path}")
     print(f"Wrote dense index to {index_path}")
     print(f"Wrote embedding manifest to {embedding_manifest_path}")
+    print(f"Wrote lexical index to {lexical_manifest_path.parent}")
 
 
 if __name__ == "__main__":

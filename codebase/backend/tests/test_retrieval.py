@@ -6,17 +6,41 @@ import numpy as np
 from backend.rag import retriever
 
 
-class FakeStore:
+class FakeDenseStore:
     def __init__(self) -> None:
         self.calls: list[tuple[np.ndarray, int]] = []
 
     def search(self, query_vector: np.ndarray, top_k: int) -> list[dict]:
         self.calls.append((query_vector, top_k))
-        return [{"text": "matched", "source": "source#chunk", "score": 0.9}]
+        return [
+            {
+                "text": "matched",
+                "source": "source#chunk",
+                "score": 0.9,
+                "chunk_id": "chunk",
+            }
+        ]
 
 
-def test_retrieve_embeds_once_and_delegates_to_dense_store(monkeypatch):
-    store = FakeStore()
+class FakeLexicalStore:
+    def __init__(self) -> None:
+        self.calls: list[tuple[str, int]] = []
+
+    def search(self, query: str, top_k: int) -> list[dict]:
+        self.calls.append((query, top_k))
+        return [
+            {
+                "text": "matched",
+                "source": "source#chunk",
+                "score": 2.0,
+                "chunk_id": "chunk",
+            }
+        ]
+
+
+def test_retrieve_normalizes_once_and_fuses_both_stores(monkeypatch):
+    dense_store = FakeDenseStore()
+    lexical_store = FakeLexicalStore()
     embedded: list[str] = []
     monkeypatch.setattr(
         retriever,
@@ -24,13 +48,19 @@ def test_retrieve_embeds_once_and_delegates_to_dense_store(monkeypatch):
         lambda question: embedded.append(question)
         or np.asarray([1.0, 0.0], dtype=np.float32),
     )
-    monkeypatch.setattr(retriever, "get_dense_store", lambda: store)
+    monkeypatch.setattr(retriever, "get_dense_store", lambda: dense_store)
+    monkeypatch.setattr(retriever, "get_lexical_store", lambda: lexical_store)
 
-    result = retriever.retrieve("  phòng A102 có bao nhiêu chỗ?  ", top_k=3)
+    result = retriever.retrieve("  phòng  A102 có bao nhiêu chỗ?  ", top_k=3)
 
     assert embedded == ["phòng A102 có bao nhiêu chỗ?"]
     assert result[0]["source"] == "source#chunk"
-    assert store.calls[0][1] == 3
+    assert result[0]["dense_score"] == 0.9
+    assert result[0]["lexical_score"] == 2.0
+    assert dense_store.calls[0][1] == retriever.CANDIDATE_K
+    assert lexical_store.calls == [
+        ("phòng A102 có bao nhiêu chỗ?", retriever.CANDIDATE_K)
+    ]
 
 
 def test_fast_reject_does_not_load_model_or_store(monkeypatch):
@@ -44,6 +74,11 @@ def test_fast_reject_does_not_load_model_or_store(monkeypatch):
         "get_dense_store",
         lambda: (_ for _ in ()).throw(AssertionError("must not load store")),
     )
+    monkeypatch.setattr(
+        retriever,
+        "get_lexical_store",
+        lambda: (_ for _ in ()).throw(AssertionError("must not load store")),
+    )
 
     assert retriever.retrieve(" ...?! ") == []
     assert retriever.retrieve("", top_k=4) == []
@@ -52,17 +87,24 @@ def test_fast_reject_does_not_load_model_or_store(monkeypatch):
 
 def test_warm_up_loads_both_model_and_store(monkeypatch):
     calls: list[str] = []
-    store = FakeStore()
+    dense_store = FakeDenseStore()
+    lexical_store = FakeLexicalStore()
     monkeypatch.setattr(
         retriever, "warm_up_embedding", lambda: calls.append("model")
     )
     monkeypatch.setattr(
         retriever,
         "get_dense_store",
-        lambda: calls.append("store") or store,
+        lambda: calls.append("dense") or dense_store,
+    )
+    monkeypatch.setattr(
+        retriever,
+        "get_lexical_store",
+        lambda: calls.append("lexical") or lexical_store,
     )
 
     result = retriever.warm_up()
 
-    assert calls == ["store", "model"]
+    assert calls == ["dense", "lexical", "model"]
     assert result["chunk_count"] == 0
+    assert result["lexical_chunk_count"] == 0

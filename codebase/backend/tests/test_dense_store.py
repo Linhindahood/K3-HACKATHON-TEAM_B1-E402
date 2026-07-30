@@ -69,7 +69,7 @@ def test_dense_store_rejects_wrong_query_dimension():
 def test_dense_store_loader_is_resident_after_first_load(monkeypatch):
     dense_store.get_dense_store.cache_clear()
     calls: list[str] = []
-    monkeypatch.setattr(dense_store, "_load_chunks", lambda: _chunks())
+    monkeypatch.setattr(dense_store, "load_chunks", lambda: _chunks())
     monkeypatch.setattr(
         dense_store,
         "load_embedding_artifacts",

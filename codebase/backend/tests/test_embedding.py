@@ -183,6 +183,24 @@ def test_validation_rejects_stale_model_artifacts(tmp_path, monkeypatch):
         )
 
 
+def test_validation_rejects_stale_query_document_contract(tmp_path, monkeypatch):
+    monkeypatch.setattr(
+        embedding_artifacts,
+        "embed_documents",
+        lambda texts: np.asarray([[1.0, 0.0], [0.0, 1.0]], dtype=np.float32),
+    )
+    embedding_artifacts.build_embedding_artifacts(_chunks(), output_dir=tmp_path)
+    manifest_path = tmp_path / "embedding_manifest.json"
+    manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    manifest["query_prefix"] = "passage: "
+    manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
+
+    with pytest.raises(ValueError, match="embedding contract"):
+        embedding_artifacts.validate_embedding_artifacts(
+            _chunks(), output_dir=tmp_path
+        )
+
+
 def test_onnx_provider_auto_prefers_cuda():
     provider = embedding_model.select_onnx_provider(
         configured="auto",

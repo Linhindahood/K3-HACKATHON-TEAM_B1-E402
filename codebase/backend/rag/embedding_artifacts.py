@@ -128,6 +128,14 @@ def load_embedding_artifacts(
     }
     if any(manifest.get(key) != value for key, value in current_model.items()):
         raise ValueError("Embedding artifacts use a stale model configuration")
+    current_contract = {
+        "document_prefix": DOCUMENT_PREFIX,
+        "query_prefix": QUERY_PREFIX,
+        "normalized": True,
+        "dtype": "float32",
+    }
+    if any(manifest.get(key) != value for key, value in current_contract.items()):
+        raise ValueError("Embedding artifacts use a stale embedding contract")
     if (
         manifest.get("chunks_hash") != _chunks_hash(ordered_chunks)
         or manifest.get("ordered_chunks") != ordered_chunks

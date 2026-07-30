@@ -168,23 +168,37 @@ duyệt gửi chunk ra provider ngoài.
 | `embedding_model.py` | Provider selection, model singleton, query/document encode |
 | `embedding_artifacts.py` | Build/load/validate vectors, manifest và FAISS |
 | `dense_store.py` | Giữ FAISS + ordered chunks sống trong process, map vector ID |
-| `retriever.py` | Validate query, gọi embedder và điều phối search |
+| `query_processing.py` | Unicode NFC, whitespace và token nguyên dấu/không dấu |
+| `lexical_artifacts.py` | Build/load/validate BM25S theo ordered chunks |
+| `lexical_store.py` | Giữ BM25S + ordered chunks sống trong process |
+| `fusion.py` | Chuẩn hóa score và weighted linear fusion |
+| `retriever.py` | Validate query, gọi embedder và điều phối hybrid search |
 
-`get_model()` và `get_dense_store()` dùng strong-reference process cache. Sau
-`retriever.warm_up()`, model/session/index/chunk metadata không bị load lại theo
-request. Không tự clear cache trong runtime; rebuild artifact yêu cầu restart
-process hoặc clear cache có chủ đích trong test/tooling.
+`get_model()`, `get_dense_store()` và `get_lexical_store()` dùng
+strong-reference process cache. Sau `retriever.warm_up()`, model/session, FAISS,
+BM25S và chunk metadata không bị load lại theo request. Không tự clear cache
+trong runtime; rebuild artifact yêu cầu restart process hoặc clear cache có chủ
+đích trong test/tooling.
 
 ### 4.4. Fusion
 
-Candidate mặc định:
+Baseline đã triển khai:
 
 ```text
 fused_score = alpha * normalized_dense_score
             + (1 - alpha) * normalized_bm25_score
 ```
 
-Benchmark `alpha ∈ {0.6, 0.7, 0.8}`. Không dùng một threshold cố định cho fused score trước khi calibration.
+`alpha=0.7` là giá trị baseline. Benchmark tiếp theo sẽ so
+`alpha ∈ {0.6, 0.7, 0.8}` trên golden set. Không dùng một threshold cố định cho
+fused score trước khi calibration.
+
+Smoke benchmark hybrid trên máy phát triển CPU:
+
+- 89 chunks; dense top-8 + BM25S top-8.
+- Dense-only và hybrid cùng đạt top-1 đúng 10/10 câu kiểm tra.
+- Query không dấu `phong A102 co bao nhieu cho` vẫn trả đúng chunk A102.
+- 100 warm hybrid runs: p50 5,75 ms; p95 6,66 ms.
 
 RRF là candidate score-free để kiểm tra tính ổn định, nhưng nghiên cứu Vietnamese IR EACL 2026 cho thấy BM25 linear interpolation thường đáng tin cậy hơn RRF trên nhiều domain tiếng Việt.
 
