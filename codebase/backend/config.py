@@ -14,6 +14,21 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY", "")
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 OPENROUTER_BASE_URL = os.getenv("OPENROUTER_BASE_URL", "https://openrouter.ai/api/v1")
+_llm_model_defaults = {
+    "openai": "gpt-5.6-luna",
+    "gemini": "gemini-3.6-flash",
+    "openrouter": "~openai/gpt-latest",
+}
+LLM_MODEL = os.getenv(
+    "LLM_MODEL",
+    _llm_model_defaults.get(LLM_PROVIDER, ""),
+)
+LLM_TIMEOUT_SECONDS = float(os.getenv("LLM_TIMEOUT_SECONDS", "20"))
+LLM_MAX_OUTPUT_TOKENS = int(os.getenv("LLM_MAX_OUTPUT_TOKENS", "500"))
+GENERATOR_MAX_PASSAGES = int(os.getenv("GENERATOR_MAX_PASSAGES", "3"))
+EVIDENCE_DENSE_THRESHOLD = float(
+    os.getenv("EVIDENCE_DENSE_THRESHOLD", "0.82")
+)
 
 EMBEDDING_PROVIDER = os.getenv("EMBEDDING_PROVIDER", "local")
 if EMBEDDING_PROVIDER == "local":
@@ -38,7 +53,6 @@ _faiss_index_dir = Path(
 if not _faiss_index_dir.is_absolute():
     _faiss_index_dir = BACKEND_DIR.parent / _faiss_index_dir
 FAISS_INDEX_DIR = str(_faiss_index_dir.resolve())
-SIMILARITY_THRESHOLD = float(os.getenv("SIMILARITY_THRESHOLD", "0.55"))
 
 KNOWLEDGE_BASE_RAW_DIR = BACKEND_DIR / "knowledge_base" / "raw"
 KNOWLEDGE_BASE_PROCESSED_DIR = BACKEND_DIR / "knowledge_base" / "processed"

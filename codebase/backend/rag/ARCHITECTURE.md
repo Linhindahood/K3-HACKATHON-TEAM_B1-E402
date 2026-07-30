@@ -204,12 +204,20 @@ RRF là candidate score-free để kiểm tra tính ổn định, nhưng nghiên
 
 ### 4.5. Generator
 
-Generator dùng SDK chính thức của provider, không dùng framework chain:
+Grounded generator dùng SDK chính thức của provider, không dùng framework
+chain:
 
-- Input chỉ gồm question, strict system prompt và top context.
-- Temperature thấp hoặc 0.
-- Source trả ra phải là subset của retrieved chunk IDs.
+- `prompt.py` là nơi duy nhất quản lý system prompt và format context.
+- `evidence_gate.py` từ chối trước khi gọi LLM nếu top dense score dưới
+  `EVIDENCE_DENSE_THRESHOLD`.
+- `llm_provider.py` giữ resident client cho OpenAI Responses API, OpenRouter
+  Chat Completions hoặc Google GenAI.
+- Input chỉ gồm question, strict system prompt và tối đa ba passages.
+- Model chỉ được cite marker `[S1]...[Sn]`; code map marker về retrieved chunks.
+- Source trả ra luôn là subset của retrieved chunk IDs.
+- URL ngoài `source_url` của cited passages bị loại.
 - Không đủ evidence thì không gọi generator.
+- Lỗi provider được phân biệt với thiếu evidence và không lộ exception/API key.
 - Không tự thao tác đặt lịch; chỉ hướng dẫn quy trình.
 
 ### 4.6. Link trong câu trả lời

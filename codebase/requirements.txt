@@ -11,8 +11,8 @@ sentence-transformers[onnx]>=5.0,<6.0
 # GPU deployment: use sentence-transformers[onnx-gpu] instead of the ONNX CPU extra.
 
 # LLM providers — API key thuần, không train model
-openai>=1.40          # dùng chung cho OpenAI và OpenRouter (OpenRouter tương thích OpenAI API qua base_url riêng)
-google-generativeai>=0.7   # Gemini
+openai>=1.66          # OpenAI Responses API + OpenRouter Chat Completions
+google-genai>=1.0     # Gemini SDK hiện hành
 
 # Discord bot (client gọi backend)
 discord.py>=2.4
