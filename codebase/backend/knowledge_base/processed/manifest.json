@@ -1,0 +1,52 @@
+{
+  "chunk_count": 89,
+  "duplicate_count": 31,
+  "schema_version": "1",
+  "sources": [
+    {
+      "reason": "image requires a verified text sidecar from the data role",
+      "source": "1_map.jpg",
+      "status": "skipped"
+    },
+    {
+      "source": "2_Handbook_AI_IN_ACTION.txt",
+      "source_hash": "113d0ca8a9262c9086d34fe70bd67f4d1ab617c61f4b3b0defae1fc6f2ef552c",
+      "status": "indexed"
+    },
+    {
+      "reason": "URL-only metadata",
+      "source": "3_link_vi_tri.txt",
+      "status": "skipped"
+    },
+    {
+      "source": "4_gio_mo_cua_library.txt",
+      "source_hash": "9c98df587b6da7f3394ad7d9c562a941b1d2a9cb36cdef7d02d2f354ea539791",
+      "status": "indexed"
+    },
+    {
+      "reason": "outside the current product scope",
+      "source": "5_ket_qua_khoa_1.txt",
+      "status": "skipped"
+    },
+    {
+      "source": "6_loai_phong_va_huong_dan_dat_phong.txt",
+      "source_hash": "ff0f2625baf78a22e39b3781409ee4e88d8a401e44a1afe2ea38e9d01a70826b",
+      "status": "indexed"
+    },
+    {
+      "reason": "placeholder or source not approved for RAG",
+      "source": "noi_quy.md",
+      "status": "skipped"
+    },
+    {
+      "reason": "placeholder or source not approved for RAG",
+      "source": "tien_ich.md",
+      "status": "skipped"
+    },
+    {
+      "reason": "placeholder or source not approved for RAG",
+      "source": "vi_tri_co_so_vat_chat.md",
+      "status": "skipped"
+    }
+  ]
+}

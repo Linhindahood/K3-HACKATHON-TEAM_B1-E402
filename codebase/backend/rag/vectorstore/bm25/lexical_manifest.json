@@ -1,0 +1,364 @@
+{
+  "chunk_count": 89,
+  "chunks_hash": "7b5c7a80d5e9131cba362e58dbeca1265418cad207c264afb3a826f57016a003",
+  "ordered_chunks": [
+    {
+      "chunk_id": "ac-iem-noi-bat-cua-chuong-trinh",
+      "content_hash": "6ca8a28644659fef0cc686df355f348feebb88972c6de48c143d394ba33a027b"
+    },
+    {
+      "chunk_id": "cau-truc-chuong-trinh",
+      "content_hash": "0573a40557d3bce18ec53e800d6b3157c7b81f033ec8da0dc77c987e13e550cb"
+    },
+    {
+      "chunk_id": "cau-truc-chuong-trinh-giai-oan-1-03-tuan",
+      "content_hash": "6c2d3aaec7c2887b005c2cfa84c735dbaf9648fb41e3f52eec4b72cce8124afa"
+    },
+    {
+      "chunk_id": "cau-truc-chuong-trinh-giai-oan-2-03-tuan",
+      "content_hash": "47a156f2c34b5705ae73d213eda1b71ca71af6133fbbef1425b041573adad474"
+    },
+    {
+      "chunk_id": "cau-truc-chuong-trinh-giai-oan-3-06-tuan",
+      "content_hash": "67a092602303e3bded49d7fc404b283e89cf18de839f47513ab922bc13ab003a"
+    },
+    {
+      "chunk_id": "cau-truc-chuong-trinh-giai-oan-1-03-tuan-nen-tang",
+      "content_hash": "e2f7a84035a7e417e37e0c8fba215c149804070fe4debb60d0cfb0eccefeb7e8"
+    },
+    {
+      "chunk_id": "cau-truc-chuong-trinh-giai-oan-2-03-tuan-chuyen-sau-theo-inh-huong",
+      "content_hash": "97f4f433ea05fce31b5e032095cd615db9707deb23fd0385f03b6640e5f14e90"
+    },
+    {
+      "chunk_id": "cau-truc-chuong-trinh-giai-oan-3-06-tuan-thuc-chien-tai-doanh-nghiep",
+      "content_hash": "d308edfab9bcd941452b9a944ab9874f806590e74b49279841249bac14109102"
+    },
+    {
+      "chunk_id": "danh-sach-cac-cong-ty-thuc-tap-phan-1",
+      "content_hash": "3d2bfc8f4c9c8af2391d1f38cbf7d2ed8571d6dc8cdf994ca3805c16d42bd52c"
+    },
+    {
+      "chunk_id": "danh-sach-cac-cong-ty-thuc-tap-phan-2",
+      "content_hash": "2696ba1bf86d7839134bc3708a7cb451dd0ea7943aa755bf66889c5bd7fa48c7"
+    },
+    {
+      "chunk_id": "thoi-khoa-bieu",
+      "content_hash": "8790e55d75f6604a58fc672d7c0862afa5e34c432d3bebcbb9006532d58776ec"
+    },
+    {
+      "chunk_id": "thoi-khoa-bieu-giai-oan-1-nen-tang-03-tuan",
+      "content_hash": "231c56c20ab62f3d22ad408458ee1430723e636a5377d38bb3d65eeebd1c7636"
+    },
+    {
+      "chunk_id": "thoi-khoa-bieu-giai-oan-2-chuyen-sau-theo-inh-huong-03-tuan",
+      "content_hash": "5c657f5850c2496b72e6991d06f982a71cb9b27d5b3afe02644cf062d5bacf17"
+    },
+    {
+      "chunk_id": "thoi-khoa-bieu-giai-oan-3-thuc-chien-tai-doanh-nghiep-06-tuan",
+      "content_hash": "2f34786a39e1fc9f8db6a94cfb3e03e679f3e20fd0a8a7dbb9c55c8b2711c74b"
+    },
+    {
+      "chunk_id": "anh-gia-qua-trinh-hoc-tap",
+      "content_hash": "f14f6304d407bb30190fe3a9ba7d44c804b616014f41416aa049001596c89efb"
+    },
+    {
+      "chunk_id": "anh-gia-qua-trinh-hoc-tap-he-thong-giang-day-va-hoc-tap",
+      "content_hash": "a15315f498ab6d432f390b2307fa3e2dd05998c570e6bd8c77ace2fa3fe0e65d"
+    },
+    {
+      "chunk_id": "cac-dich-vu-tien-ich",
+      "content_hash": "63ada44fa99cccdd07b672ebd302f1c302afe5095eed1a0ceab18ba312a3d09e"
+    },
+    {
+      "chunk_id": "cac-dich-vu-tien-ich-ket-noi-internet-wi-fi",
+      "content_hash": "19a155076a70622a3bdaf2320759fa13e9192561e8e8bf2aaf907312ef7f2531"
+    },
+    {
+      "chunk_id": "cac-dich-vu-tien-ich-phong-hoc",
+      "content_hash": "73162b4529a37dad69cf8238259776896420dc399369fb71f5bdc0fa67512a3d"
+    },
+    {
+      "chunk_id": "cac-dich-vu-tien-ich-ma-hoc-vien-the-hoc-vien",
+      "content_hash": "2c3e1b3a8da0086a12672728a7004c3c381d1738956ed770642c3d7565bface7"
+    },
+    {
+      "chunk_id": "cac-dich-vu-tien-ich-thu-vien",
+      "content_hash": "7db2edc3b487a33d2c19e42a65d43dcff33b0c2479e74223bf0b67242a7bc79a"
+    },
+    {
+      "chunk_id": "cac-dich-vu-tien-ich-dich-vu-an-uong-canteen",
+      "content_hash": "76e2168dde8e9215a35900f88659a7200cc658867c056f8c5778ef3e043fefb3"
+    },
+    {
+      "chunk_id": "cac-dich-vu-tien-ich-khu-vuc-o-xe-va-sac-xe-ien",
+      "content_hash": "ea4f7e3de80e91380dc5b6813ca816de2ca63b60b4faeb4e1b6286e26c18c33b"
+    },
+    {
+      "chunk_id": "quy-inh-ao-tao",
+      "content_hash": "c7c955223cc52f4c6ee39a9c5a856cfdf848a7e72dacf6ac8c43482039057b36"
+    },
+    {
+      "chunk_id": "quy-inh-ao-tao-quy-inh-chuyen-can",
+      "content_hash": "f1331bab76e10767e2d9d86d8f6fcbbcbeab64e7f01b1aa64bd9704d0eeb4c4d"
+    },
+    {
+      "chunk_id": "quy-inh-ao-tao-bao-luu-ket-qua-hoc-tap-phan-1",
+      "content_hash": "36b45a9fb084a784abec7efa64a0b9e4c34ac5fee8a05028a0c5a3a26983df14"
+    },
+    {
+      "chunk_id": "quy-inh-ao-tao-bao-luu-ket-qua-hoc-tap-phan-2",
+      "content_hash": "58c70a7289eba96ce41acfe30f7f10278e0b8541e2dbde6c80a5e987cf2be00b"
+    },
+    {
+      "chunk_id": "quy-inh-ao-tao-ieu-kien-cong-nhan-hoan-thanh-chuong-trinh",
+      "content_hash": "764ec00774bea556eccce2131291c2a3907c44c1303369b9cd9d95703fb2d090"
+    },
+    {
+      "chunk_id": "quy-inh-ao-tao-thong-tin-ve-chinh-sach-tro-cap-phan-1",
+      "content_hash": "94e570c71be8b83b817d97e35354f9f15a02e7c86bc503772fd4fbece8859498"
+    },
+    {
+      "chunk_id": "quy-inh-ao-tao-thong-tin-ve-chinh-sach-tro-cap-phan-2",
+      "content_hash": "0aa7a8db05f69ecc2a57a1703dcd5dfee9d227e85c6afbe7fcf0019a0a686992"
+    },
+    {
+      "chunk_id": "quy-inh-ao-tao-noi-quy-va-van-hoa-hoc-tap",
+      "content_hash": "7248275bbfb49f19d63d0f68382f77e4e0c5651c8cf2c03e5fc05f310241084e"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap",
+      "content_hash": "418e48f64741fa2fddc1dfcf62b2c00b544b4206a8df9c6b5253a68b81e3d3ae"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap-chuong-trinh-tap-trung-vao-linh-vuc-nao-ai-cv-nlp-data",
+      "content_hash": "bf22ee7ce1e076834dcc6e05b98398307f60bd0ee3d190cf555aaaf00fa53dc3"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap-hoc-vien-co-uoc-hoc-lai-kien-thuc-nen-khong",
+      "content_hash": "8407a7191afb36a5a266a46acd86ec945b1dca94cbd260afe90e221bd9a5343c"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap-chuong-trinh-day-truc-tiep-hay-online",
+      "content_hash": "c997cd1cb2a3425e4d1bd970160907bfd84f49ca8a351a5830311bde5379f6eb"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap-hoc-vien-co-uoc-nghi-cuoi-tuan-khong",
+      "content_hash": "2bb7e12660d66989cdf2ac962a3fe4b3449f1df245d9c80836b885b4cada1764"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap-quy-trinh-xin-nghi-phep-nhu-the-nao",
+      "content_hash": "d9b93ae86933696c5274bea21057429ecc31cb8bf4e4ed0e4bf8d717efe0819b"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap-sinh-vien-nam-3-4-con-lich-hoc-tren-truong-co-tham-gia-uoc-khong",
+      "content_hash": "9ec5c16fd76a1f24c55e37375e73e42a1d6d06e54be0b516c07bfc346b09c619"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap-co-the-vua-i-lam-vua-tham-gia-khong",
+      "content_hash": "6b0d0b6f4e38346e1a3db296a2761f2b9638515a1468105fd7084cec18fc104b"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap-hoc-vien-can-tu-mang-laptop-hay-su-dung-may-tinh-cua-nha-truong",
+      "content_hash": "384fb8027315ff5c041c5d4613a08cee3741b163b4df8f671ce85cbbb67a419e"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap-hoc-vien-co-uoc-chia-lop-theo-trinh-o-khong",
+      "content_hash": "5df73b3d8bc8eb6523bdb2b91c9f3cc3e29484288a858c9d714eae8ffd39efdb"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap-giai-oan-thuc-tap-hoc-vien-co-uoc-tu-chon-noi-thuc-tap-hay-uoc-phan-cong",
+      "content_hash": "020c0ad8988b858021e568bb252ca9ab64f4c4b13f7d4f17d12ca61afb5d214c"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap-hoc-vien-co-uoc-ong-dau-thuc-tap-tai-cong-ty-thuc-tap-khong",
+      "content_hash": "f921b34ded34e8a4555156f71d0eddf1ca665228517d37c3a96932b232103f8c"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap-hoc-vien-co-the-thuc-tap-tai-tp-ho-chi-minh-va-gan-noi-o-khong",
+      "content_hash": "0c57f4d1b6a625de525b68881abeffaccaf0536c1a12644ef4f80821b268b6c9"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap-chuong-trinh-co-ho-tro-chi-phi-i-lai-khong",
+      "content_hash": "305df55e5fa2afb0c16e07866361ab526a4550b9051b6eae94610f88101e4848"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap-hoc-vien-co-uoc-hoc-nang-cao-sau-khoa-hoc-khong",
+      "content_hash": "0ced37c027ee57c33ddec1263f0213aa424c4286cc23661091de16944a9440fa"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap-co-hoi-nghe-nghiep-sau-khi-tham-du-chuong-trinh",
+      "content_hash": "f29156eabfcf789324bdd9000f81fe8680790474684d4d8ad0757c2dda6fa1b1"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap-lien-he",
+      "content_hash": "d9059aee306bbca6f61395f2bbacb9610f575ee72ea0a78149aebe3eeb5dfc4e"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap-ban-chi-ao-chuong-trinh",
+      "content_hash": "ddde1982dd8957df9e1715e149dc1d92f742061caf3c40595f1f6eae03cb4007"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap-phu-trach-hoc-vien",
+      "content_hash": "9b53c0ea2b2a7c6cd92271c26f92dcd62184edce8f4fa4bbe498d2de65166770"
+    },
+    {
+      "chunk_id": "cau-hoi-thuong-gap-cong-thong-tin-chung-cho-tat-ca-sinh-vien-hoc-vien-vinuni",
+      "content_hash": "471b91c6e0f575117fd6852be27b1c541a62008fd85fd3b9da6a5bf2309f07c3"
+    },
+    {
+      "chunk_id": "4-gio-mo-cua-library-txt-thu-vien-vinuniversity",
+      "content_hash": "f1c7effb3df2c0152b0853eb1ccca774d6e4ee8378349d39711b2dbbf8e35dcc"
+    },
+    {
+      "chunk_id": "4-gio-mo-cua-library-txt-gio-mo-cua-quyen-truy-cap",
+      "content_hash": "874011bdf379fdfa08fbbd49e2d58b030f6afba51dec0593865294c60de1c72e"
+    },
+    {
+      "chunk_id": "gio-mo-cua",
+      "content_hash": "425d865584a32d4e045eea5413fbfde78ae6d2c06127a09abac138e93b7648ed"
+    },
+    {
+      "chunk_id": "gio-mo-cua-gio-mo-cua-tu-thang-7-en-thang-8",
+      "content_hash": "07e341c34f91fd0621c063422e30d7b5818510930c8ecd6a4d76a5961761be89"
+    },
+    {
+      "chunk_id": "gio-mo-cua-gio-mo-cua-tu-thang-9",
+      "content_hash": "1783a2d9fd8333caaf8e326a1a3ed2fa77c2ad5c2ce56f72c4d8ba3eb2af6b17"
+    },
+    {
+      "chunk_id": "quyen-truy-cap-thu-vien",
+      "content_hash": "88ee66b8a3561e78f7df987e3960222068f8b0f0af5361efa309ae6ca33202aa"
+    },
+    {
+      "chunk_id": "quyen-truy-cap-thu-vien-ia-iem",
+      "content_hash": "fe4152e3443991e3dc2bca04fb552e50be10fd94e16b24afe3342f373c3008bd"
+    },
+    {
+      "chunk_id": "chinh-sach-at-phong-hoc-nhom",
+      "content_hash": "ccebd1f9378c349fb8b7cd8de4eeff7a74cc672182e5727a16d64dab6b66f9d7"
+    },
+    {
+      "chunk_id": "chinh-sach-at-phong-hoc-nhom-ieu-kien-at-phong",
+      "content_hash": "f0b287dbac974bacb3c4f25a86f3d40ea291ff2c901ed3c003f34dcb665fc393"
+    },
+    {
+      "chunk_id": "chinh-sach-at-phong-hoc-nhom-thoi-iem-at-phong",
+      "content_hash": "d3816146e7980f7cf3815230cd0a85a614cfee1230b0cdc6f264822e4b8d3a41"
+    },
+    {
+      "chunk_id": "chinh-sach-at-phong-hoc-nhom-quy-inh-huy-va-su-dung-phong",
+      "content_hash": "d622b37042d60e9677959f6bec1ab608c1395fc4a6801fc10e6bfa2fe27ffe28"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi",
+      "content_hash": "921ee3b2cda8e49726a65cbf51dab2c0d34abfb4d0d9e8ee98eddca11c538253"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a102",
+      "content_hash": "a563539e2909347e2355eafb4a6a3c248f1810d60ed7919a01177398578c8084"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a103",
+      "content_hash": "c90465f94806892c0080de77f34c356f272e250f87db2d886b7c78a784b0281b"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a104",
+      "content_hash": "a31422dcdaa823c16d2a9cd77a469e132ade2b0893965b96fc81ea5e70fbb214"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a105",
+      "content_hash": "25a89071f01571b4ede16889ad704ffbe90bf1e00df20bf8528834818087f4c4"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a106",
+      "content_hash": "80981b40815e9a49e80b51dcd571e2613de5a48890e7fd1f89605a9fa055601e"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a107",
+      "content_hash": "131ae0dc77b8719be7c49eb68113bb198065d8aeffc8106f7a234a7c688d5d09"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a108",
+      "content_hash": "7b6fac9b18fb2b7248c62da49d7dd9ae756688f2c507e8d5dc0982cdd67a7f82"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a109",
+      "content_hash": "944c7e48d62a0465f93c4eab3327208ef339dde5389a369a469efa4b8a322d2f"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a110",
+      "content_hash": "4ff2bcf44fda9992b56940ca17397e6659d64114f7cc9b2a728dd74f24d2beac"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a111",
+      "content_hash": "0fd0b1111070e0133978d8019fc9bee50cc8d1c4f97eac63a89521b6b692e60a"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a112",
+      "content_hash": "d625ac9c5831906d7d17223617f97d9c5cf9f54bd1030681bffb5f2d27c35e53"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a113",
+      "content_hash": "078650ca2290395e3f22a331f6fc0726bb47b38b566bbd6817de3e98bc7c4acc"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a114",
+      "content_hash": "5d9c3f7c72c8eb3edb5a58c8871a34897291ef0ce3c0a9badc45af691d75e013"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a101",
+      "content_hash": "b0a725055a09b4fc48b8e437739c64ba4efe2933acf6b70e748bccb0d7924876"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a203",
+      "content_hash": "92b36afa122aa8d9063b4a6420b455d0e8aea6aac5ba43d91bb28ac06c600d49"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a202",
+      "content_hash": "ddeb6b2bc81507210a443b80d3e6f05b304aa222ea67caf92f5647154ae4515b"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a207",
+      "content_hash": "4891019e8c4b0940698fac061a662534e4890da00982568b778905f1563b1393"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a204",
+      "content_hash": "8fa065599a7ea151f41e8183c7c4c07e2d2539896fe4b2665643807c90dd383a"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a205",
+      "content_hash": "d57569fa2aa6c7628688137f42922b790d8623a794a41b0c99ffabf3ab69db6d"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a212",
+      "content_hash": "9c41c2e38d31a01930c0bac130f7dfd5e8ed2ff637ff96e20b0006f9376e4d8f"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a213",
+      "content_hash": "782d99e193d0272689bf9a65b187f027455cc7a34d4d5e3aceffcccb27e1ac9f"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a214",
+      "content_hash": "c769b9f7f74eb7fd572b148270bfb3e69a279e3a22c8e4fd24cd4db78ea777bb"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a215",
+      "content_hash": "dc722e06b7b8e033625bd0d750dfbf642d27ce6f115a56abfa8e98ad5d967fad"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a216",
+      "content_hash": "9f3f04613991a370c544d7902d069184fd33dd9e27417bbb8c0343af3b3fc7da"
+    },
+    {
+      "chunk_id": "danh-sach-phong-va-trang-thiet-bi-phong-a217",
+      "content_hash": "d9d7dd117edaf5c67166b93e7e320ad899ca10a723978ab8167f12ea7a8c7b42"
+    },
+    {
+      "chunk_id": "huong-dan-at-phong-bang-microsoft-outlook",
+      "content_hash": "20dea192fab5b121dbe5b835d1f878d0fb89518668b9a9d1247a0f83a021dafe"
+    }
+  ],
+  "schema_version": "1",
+  "tokenizer_version": "unicode-accentless-v1"
+}
