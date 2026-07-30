@@ -53,6 +53,24 @@ def is_url_only(text: str) -> bool:
     return bool(lines) and all(_URL_RE.fullmatch(line) for line in lines)
 
 
+_PLACEHOLDER_PATTERNS = [
+    re.compile(r"điền (?:dữ liệu|thông tin|nội dung)", re.IGNORECASE),
+    re.compile(r"\bplaceholder\b", re.IGNORECASE),
+    re.compile(r"bổ sung thông tin vào đây", re.IGNORECASE),
+]
+
+
+def validate_content_preflight(documents: list[dict]) -> None:
+    """Ensure raw documents do not contain placeholder instructions before chunking."""
+    for document in documents:
+        text = document.get("text", "")
+        for pattern in _PLACEHOLDER_PATTERNS:
+            if pattern.search(text):
+                raise ValueError(
+                    f"Content preflight failed: placeholder detected in {document['source']}"
+                )
+
+
 def load_raw_documents() -> list[dict]:
     """Load only text sources approved for the current RAG scope."""
     documents = []
@@ -70,7 +88,9 @@ def load_raw_documents() -> list[dict]:
                 "source_hash": _sha256(text),
             }
         )
+    validate_content_preflight(documents)
     return documents
+
 
 
 def _is_upper_heading(line: str) -> bool:

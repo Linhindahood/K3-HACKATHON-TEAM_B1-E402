@@ -53,10 +53,13 @@ def generate(question: str, passages: list[dict]) -> dict:
         return _fallback()
 
     cited = cited_passages(answer, selected)
+    if not cited:
+        return _fallback()
     answer = sanitize_citations(answer, len(selected))
     answer = sanitize_urls(answer, cited)
     if not answer:
         return _fallback()
+
     return {
         "answer": attach_sources(answer, cited),
         "sources": source_ids(cited),

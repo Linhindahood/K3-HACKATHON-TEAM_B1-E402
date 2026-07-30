@@ -37,7 +37,7 @@ def cited_passages(answer: str, passages: list[dict]) -> list[dict]:
         if 0 <= index < len(passages) and index not in seen:
             cited.append(passages[index])
             seen.add(index)
-    return cited or passages[:1]
+    return cited
 
 
 def sanitize_citations(answer: str, passage_count: int) -> str:

@@ -107,6 +107,7 @@ def test_artifact_output_is_reproducible(tmp_path):
     assert manifest["chunk_count"] == len(chunks)
     assert manifest["duplicate_count"] >= 1
     assert any(
-        item["source"] == "1_map.jpg" and item["status"] == "skipped"
+        item["source"] in ("1_map.jpg", "1_map.png") and item["status"] == "skipped"
         for item in manifest["sources"]
     )
+
