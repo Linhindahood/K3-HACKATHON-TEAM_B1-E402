@@ -20,5 +20,8 @@ codebase/backend/rag/vectorstore/*
 codebase/backend/knowledge_base/processed/*
 !codebase/backend/knowledge_base/processed/.gitkeep
 
+# Data thật (bản sao từ data/docs)
+codebase/backend/knowledge_base/raw/
+
 # Streamlit
 .streamlit/secrets.toml
