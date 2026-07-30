@@ -58,6 +58,8 @@ def load_raw_documents() -> list[dict]:
     documents = []
     for source, metadata in _SOURCES.items():
         path = config.KNOWLEDGE_BASE_RAW_DIR / source
+        if not path.exists():
+            continue
         text = path.read_text(encoding="utf-8-sig").strip()
         documents.append(
             {

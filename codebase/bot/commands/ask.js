@@ -1,8 +1,10 @@
 const { client, BACKEND_URL } = require('../client');
 const { formatAnswer } = require('../formatting');
+const { logQA } = require('../logger');
 
 /**
  * Nhận câu hỏi từ sinh viên trong Discord, gọi backend /ask, trả lời lại kênh.
+ * Ghi log mỗi lượt hỏi-đáp ra file .jsonl.
  * @param {import('discord.js').Message} message 
  */
 async function handleQuestion(message) {
@@ -10,6 +12,8 @@ async function handleQuestion(message) {
   if (!question) {
     return;
   }
+
+  const startTime = Date.now();
 
   try {
     const response = await fetch(`${BACKEND_URL}/ask`, {
@@ -25,9 +29,33 @@ async function handleQuestion(message) {
     }
 
     const data = await response.json();
+    const responseTimeMs = Date.now() - startTime;
+
+    // Ghi log câu trả lời thành công
+    logQA({
+      message,
+      question,
+      answer: data.answer,
+      sources: data.sources,
+      hasEvidence: data.has_evidence,
+      responseTimeMs,
+      status: 'success',
+    });
+
     const embed = formatAnswer(data.answer, data.sources);
     await message.channel.send({ embeds: [embed] });
   } catch (error) {
+    const responseTimeMs = Date.now() - startTime;
+
+    // Ghi log lỗi
+    logQA({
+      message,
+      question,
+      responseTimeMs,
+      status: 'error',
+      error: error.message,
+    });
+
     console.error('Lỗi khi gọi backend FastAPI:', error);
     await message.reply('Xin lỗi, có lỗi xảy ra khi xử lý câu hỏi với backend.');
   }
@@ -45,3 +73,4 @@ client.on('messageCreate', async (message) => {
 module.exports = {
   handleQuestion,
 };
+

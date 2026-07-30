@@ -7,7 +7,7 @@ dotenv.config();
 
 const { Client, GatewayIntentBits } = require('discord.js');
 
-const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN || '';
+const DISCORD_BOT_TOKEN = process.env.DISCORD_BOT_TOKEN || process.env.DISCORD_TOKEN || '';
 const BACKEND_URL = process.env.BACKEND_URL || 'http://localhost:8000';
 
 const client = new Client({
