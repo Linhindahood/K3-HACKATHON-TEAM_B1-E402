@@ -4,6 +4,17 @@ File này là nhật ký append-only cho các lần triển khai RAG thành côn
 lần implement và kiểm thử đạt, thêm một mục mới gồm: thời gian `Asia/Saigon`,
 commit, logic cũ/mới, file thay đổi, kết quả kiểm thử và cách rollback.
 
+## Quy ước commit
+
+Mọi commit do role RAG này tạo phải có format:
+
+```text
+minh - {task}
+```
+
+Không rewrite các commit cũ chỉ để đổi message vì việc đó làm thay đổi hash đã
+được dùng trong nhật ký rollback.
+
 ## 2026-07-30 14:12:20 +07:00 — Phase 1 ingestion baseline
 
 - Branch: `minh/rag-design`
