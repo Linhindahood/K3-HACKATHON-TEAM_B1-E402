@@ -314,17 +314,23 @@ def write_artifacts(
     return chunks_path, manifest_path
 
 
-def build_index(chunks: list[dict]) -> None:
-    """Build embeddings/vector index in phase 2 after architecture approval."""
-    raise NotImplementedError("Vector-index construction is not part of phase 1")
+def build_index(chunks: list[dict]) -> tuple[Path, Path, Path]:
+    """Build local E5 embeddings and an exact dense FAISS index."""
+    from backend.rag.embedding import build_embedding_artifacts
+
+    return build_embedding_artifacts(chunks)
 
 
 def main() -> None:
     documents = load_raw_documents()
     chunks = chunk_documents(documents)
     chunks_path, manifest_path = write_artifacts(documents, chunks)
+    embeddings_path, index_path, embedding_manifest_path = build_index(chunks)
     print(f"Wrote {len(chunks)} chunks to {chunks_path}")
     print(f"Wrote manifest to {manifest_path}")
+    print(f"Wrote embeddings to {embeddings_path}")
+    print(f"Wrote dense index to {index_path}")
+    print(f"Wrote embedding manifest to {embedding_manifest_path}")
 
 
 if __name__ == "__main__":

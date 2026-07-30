@@ -134,15 +134,26 @@ Word segmentation bằng `underthesea`/VnCoreNLP là candidate, không phải ba
 
 ### 4.3. Embedding runtime
 
-Baseline đầu tiên dùng `text-embedding-3-small` vì repo đã có SDK/config, thời gian triển khai ngắn và model có hỗ trợ multilingual retrieval.
+Baseline dùng local `intfloat/multilingual-e5-small` qua Sentence Transformers
+ONNX. Quyết định local-first tránh gửi toàn bộ corpus ra provider ngoài, dùng
+vector 384 chiều và giữ query latency thấp sau warm-up. Document phải có prefix
+`passage:`, query phải có prefix `query:`; thiếu prefix làm giảm retrieval
+quality theo model card.
 
-Local candidate dùng FastEmbed hoặc Sentence Transformers ONNX/OpenVINO:
+Model revision được pin trong config. Model và ONNX session chỉ load một lần;
+backend phải gọi warm-up khi khởi động, không load model trong request. Kết quả
+đo trên máy phát triển với 100 query runs:
 
-- FastEmbed chạy ONNX Runtime, có model quantized và hỗ trợ multilingual models.
-- Sentence Transformers hỗ trợ ONNX/OpenVINO và quantization, phù hợp khi cần export model chưa có sẵn trong FastEmbed.
-- BGE-M3 dùng `FlagEmbedding`; chỉ benchmark khi máy có đủ RAM/GPU hoặc CPU latency chấp nhận được.
+- Cold load + query đầu: khoảng 19,2 giây.
+- Warm query embedding p50: 5,17 ms.
+- Warm query embedding p95: 6,00 ms.
 
-Không tải model local trong request. Model, FAISS index, BM25 index và chunk metadata phải được load một lần khi backend khởi động.
+Giữ ONNX FP32 portable trong baseline. Quantized ONNX chỉ là candidate nếu đo
+trên máy demo chứng minh nhanh hơn mà không làm giảm quality. BGE-M3 chỉ
+benchmark khi E5-small không đạt quality bar và máy có đủ RAM/CPU/GPU.
+
+`text-embedding-3-small` là remote control candidate, chỉ được dùng nếu có phê
+duyệt gửi chunk ra provider ngoài.
 
 ### 4.4. Fusion
 
@@ -269,14 +280,14 @@ Mỗi benchmark chỉ thay một trục, giữ nguyên các trục còn lại.
 
 | ID | Candidate | Runtime | Kỳ vọng |
 |---|---|---|---|
-| E0 | `text-embedding-3-small` | OpenAI API | Baseline nhanh triển khai |
-| E1 | `text-embedding-3-large` | OpenAI API | Accuracy candidate, chi phí/latency cao hơn |
-| E2 | `intfloat/multilingual-e5-small` | ST ONNX/OpenVINO | Local speed candidate |
+| E0 | `intfloat/multilingual-e5-small` | Sentence Transformers ONNX | Local baseline |
+| E1 | `text-embedding-3-small` | OpenAI API | Remote control, cần duyệt data |
+| E2 | `text-embedding-3-large` | OpenAI API | Remote quality control, cần duyệt data |
 | E3 | `intfloat/multilingual-e5-large` | FastEmbed ONNX | Local quality candidate, model lớn |
-| E4 | `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` | FastEmbed | Local lightweight candidate |
-| E5 | `BAAI/bge-m3` | FlagEmbedding | Vietnamese/hybrid quality candidate, nặng |
+| E4 | `sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2` | FastEmbed | Local lightweight control |
+| E5 | `BAAI/bge-m3` | FlagEmbedding | Multilingual quality candidate, nặng |
 
-Với E2/E3, phải dùng đúng prefix `query:` và `passage:`.
+Với E0/E3, phải dùng đúng prefix `query:` và `passage:`.
 
 ### 6.3. Dense vector engine
 
@@ -402,7 +413,7 @@ Không chạy full Cartesian product. Thử theo funnel:
 
 1. C0 + E0 + V0 + L0 + R0 + F0.
 2. Chọn chunking bằng C0/C1/C2, giữ các trục khác.
-3. Chọn embedding bằng E0/E2/E4; thêm E1/E3/E5 nếu cần accuracy.
+3. Đo E0; chỉ thêm E3/E5 nếu thiếu accuracy và E1/E2 khi data được phép gửi ra ngoài.
 4. So V0/V1.
 5. Tune alpha và threshold bằng answerable + unanswerable cases.
 6. Chỉ thử reranker nếu retrieval recall tốt nhưng rank đầu chưa tốt.
@@ -415,7 +426,7 @@ Candidate thắng phải nằm trên Pareto frontier quality–latency–memory.
 ```text
 Orchestration: direct Python
 Chunking: C0 structure-aware
-Embedding: E0 text-embedding-3-small
+Embedding: E0 intfloat/multilingual-e5-small, local ONNX FP32
 Dense index: V0 FAISS IndexFlatIP
 Lexical: L0 BM25S + accentless tokens
 Fusion: R0 weighted linear, alpha benchmark 0.6/0.7/0.8

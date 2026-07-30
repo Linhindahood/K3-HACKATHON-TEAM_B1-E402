@@ -6,6 +6,7 @@ pydantic>=2.6
 # RAG
 faiss-cpu>=1.8
 numpy>=1.26
+sentence-transformers[onnx]>=5.0,<6.0
 
 # LLM providers — API key thuần, không train model
 openai>=1.40          # dùng chung cho OpenAI và OpenRouter (OpenRouter tương thích OpenAI API qua base_url riêng)
