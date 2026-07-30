@@ -1,3 +1,24 @@
 .DS_Store
 node_modules/
 *.env
+
+# docs
+/docs
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+*.egg-info/
+.pytest_cache/
+
+# RAG artifacts — tự sinh bởi backend/rag/ingest.py, không commit
+codebase/backend/rag/vectorstore/*
+!codebase/backend/rag/vectorstore/.gitkeep
+codebase/backend/knowledge_base/processed/*
+!codebase/backend/knowledge_base/processed/.gitkeep
+
+# Streamlit
+.streamlit/secrets.toml
