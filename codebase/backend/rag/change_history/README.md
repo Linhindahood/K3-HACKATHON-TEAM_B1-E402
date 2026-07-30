@@ -30,6 +30,8 @@ tiếp theo.
 
 ## Index
 
+- [Raw corpus alignment với ingest.py](raw-corpus-alignment_2026-07-30_20-43-30.md)
+- [Route → pipeline delegation](route-pipeline-delegation_2026-07-30_20-42-48.md)
 - [RAG runtime artifacts](rag-runtime-artifacts_2026-07-30_15-35-38.md)
 - [Grounded generator](grounded-generator_2026-07-30_15-30-17.md)
 - [Hybrid retrieval](hybrid-retrieval_2026-07-30_15-14-01.md)

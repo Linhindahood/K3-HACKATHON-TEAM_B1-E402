@@ -52,6 +52,20 @@ cp ../.env.example ../.env   # nếu chưa có — bot/ dùng chung .env với b
 npm start                     # hoặc: node index.js
 ```
 
+## Ingest — build FAISS + BM25S index (bắt buộc trước lần chạy đầu tiên)
+
+Backend đọc knowledge base đã xử lý sẵn (`backend/knowledge_base/processed/chunks.jsonl` +
+`backend/rag/vectorstore/`) — các file này **không commit** (gitignored, tự sinh). Nếu vừa
+`git pull` mà thiếu, hoặc vừa đổi nội dung trong `backend/knowledge_base/raw/`, chạy lại:
+
+```bash
+python -m backend.rag.ingest
+```
+
+Lệnh này chunk tài liệu, build dense embedding (E5 local ONNX) + FAISS index + BM25S index. Nếu
+quên chạy, `uvicorn` sẽ báo lỗi rõ ràng "Processed chunks are missing" / "Dense artifacts are
+missing" khi có request đầu tiên tới `/ask`.
+
 ## Chạy từng phần
 
 Backend (FastAPI — bắt buộc chạy trước, cả bot lẫn frontend đều gọi vào đây):
@@ -74,10 +88,21 @@ Frontend Streamlit (UI demo/debug nội bộ cho team, không phải sản phẩ
 streamlit run frontend/app.py
 ```
 
-Test:
+## Test — 2 lớp khác nhau
+
+**Unit test** (đúng logic từng module — retriever, fusion, generator, prompt... — miễn phí, không
+gọi LLM thật, chạy trước mỗi lần đổi code):
 
 ```bash
 pytest backend/tests/
+```
+
+**Golden-set eval** (đúng chất lượng sản phẩm cuối trên bộ câu hỏi thật — khác mục đích với unit
+test ở trên, xem `../eval/README.md`):
+
+```bash
+python ../eval/run_retrieval_eval.py   # miễn phí, local — đo Recall/MRR của retriever
+python ../eval/run_answer_eval.py      # gọi LLM thật — đo answerability/citation/scope-safety
 ```
 
 ## Cấu trúc
