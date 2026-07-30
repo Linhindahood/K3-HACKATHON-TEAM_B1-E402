@@ -15,6 +15,54 @@ minh - {task}
 Không rewrite các commit cũ chỉ để đổi message vì việc đó làm thay đổi hash đã
 được dùng trong nhật ký rollback.
 
+## 2026-07-30 14:40:03 +07:00 — Local E5 embedding
+
+- Branch: `minh/rag-design`
+- Commit triển khai: `efdbad20bcf14a66cdeb647aa501e83633dc02a1`
+- Commit chứa logic cũ: `bbfae41fcedbccdf370518383d50bba3a9a7b6ad`
+
+### Logic cũ
+
+- `build_index()` chưa triển khai và không có document/query embedding.
+- Config mặc định dùng remote `text-embedding-3-small`.
+- Chưa có vector artifact, provenance check hoặc FAISS index thật.
+
+### Logic mới
+
+- Dùng local `intfloat/multilingual-e5-small`, ONNX CPU, revision pin
+  `614241f622f53c4eeff9890bdc4f31cfecc418b3`.
+- Document dùng `passage:`, query dùng `query:`; vector float32 384 chiều được
+  L2-normalize.
+- Model là singleton; cache snapshot được ưu tiên để không kiểm tra mạng khi
+  startup. `warm_up()` chuẩn bị model trước khi nhận query.
+- Sinh và validate `embeddings.npy`, `dense.faiss`,
+  `embedding_manifest.json`; phát hiện chunk/model artifact stale.
+- `FAISS_INDEX_DIR` được resolve tuyệt đối để không phụ thuộc working directory.
+- Verify: 14 tests passed; artifact `(89, 384)`; warm query 100 runs đạt p50
+  5,17 ms, p95 6,00 ms; 5/5 smoke query có top-1 đúng. Cold warm-up 19,2 giây.
+
+### File thuộc thay đổi
+
+- `codebase/backend/config.py`
+- `codebase/backend/rag/ARCHITECTURE.md`
+- `codebase/backend/rag/embedding.py`
+- `codebase/backend/rag/ingest.py`
+- `codebase/backend/tests/test_embedding.py`
+- `codebase/requirements.txt`
+
+### Khôi phục chính xác
+
+```powershell
+git status --short
+git revert efdbad20bcf14a66cdeb647aa501e83633dc02a1
+
+# Áp dụng lại implementation lên branch khác
+git cherry-pick efdbad20bcf14a66cdeb647aa501e83633dc02a1
+```
+
+Vector artifacts không thuộc commit. Sau khi áp dụng lại, cài dependency rồi
+chạy `python -m backend.rag.ingest` để tái tạo chính xác.
+
 ## 2026-07-30 14:12:20 +07:00 — Phase 1 ingestion baseline
 
 - Branch: `minh/rag-design`
