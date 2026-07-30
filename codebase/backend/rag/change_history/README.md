@@ -27,5 +27,6 @@ Không rewrite commit cũ chỉ để đổi message vì sẽ làm thay đổi h
 
 ## Index
 
+- [Split change history by task](split-change-history-by-task_2026-07-30_14-42-33.md)
 - [Local E5 embedding](local-e5-embedding_2026-07-30_14-40-03.md)
 - [Phase 1 ingestion baseline](phase-1-ingestion-baseline_2026-07-30_14-12-20.md)
