@@ -141,12 +141,18 @@ vector 384 chiều và giữ query latency thấp sau warm-up. Document phải c
 quality theo model card.
 
 Model revision được pin trong config. Model và ONNX session chỉ load một lần;
-backend phải gọi warm-up khi khởi động, không load model trong request. Kết quả
-đo trên máy phát triển với 100 query runs:
+backend phải gọi warm-up khi khởi động, không load model trong request. Runtime
+tự chọn `CUDAExecutionProvider` nếu ONNX Runtime GPU cung cấp; nếu không sẽ dùng
+`CPUExecutionProvider`. Không dùng riêng `torch.cuda.is_available()` để quyết
+định vì inference baseline chạy qua ONNX.
 
-- Cold load + query đầu: khoảng 19,2 giây.
-- Warm query embedding p50: 5,17 ms.
-- Warm query embedding p95: 6,00 ms.
+Kết quả đo end-to-end dense retrieval trên máy phát triển CPU với 100 query
+runs:
+
+- Cold warm-up model + chunks + FAISS: khoảng 11,85 giây.
+- Warm retrieval p50: 6,25 ms.
+- Warm retrieval p95: 7,99 ms.
+- 5/5 smoke query có top-1 đúng.
 
 Giữ ONNX FP32 portable trong baseline. Quantized ONNX chỉ là candidate nếu đo
 trên máy demo chứng minh nhanh hơn mà không làm giảm quality. BGE-M3 chỉ
@@ -154,6 +160,20 @@ benchmark khi E5-small không đạt quality bar và máy có đủ RAM/CPU/GPU.
 
 `text-embedding-3-small` là remote control candidate, chỉ được dùng nếu có phê
 duyệt gửi chunk ra provider ngoài.
+
+### 4.3.1. Module boundary và lifecycle
+
+| Module | Trách nhiệm |
+|---|---|
+| `embedding_model.py` | Provider selection, model singleton, query/document encode |
+| `embedding_artifacts.py` | Build/load/validate vectors, manifest và FAISS |
+| `dense_store.py` | Giữ FAISS + ordered chunks sống trong process, map vector ID |
+| `retriever.py` | Validate query, gọi embedder và điều phối search |
+
+`get_model()` và `get_dense_store()` dùng strong-reference process cache. Sau
+`retriever.warm_up()`, model/session/index/chunk metadata không bị load lại theo
+request. Không tự clear cache trong runtime; rebuild artifact yêu cầu restart
+process hoặc clear cache có chủ đích trong test/tooling.
 
 ### 4.4. Fusion
 

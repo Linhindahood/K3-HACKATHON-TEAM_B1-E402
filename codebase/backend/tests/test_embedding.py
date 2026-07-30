@@ -6,7 +6,8 @@ import json
 import numpy as np
 import pytest
 
-from backend.rag import embedding
+from backend.rag import embedding_artifacts
+from backend.rag import embedding_model
 
 
 class FakeModel:
@@ -46,17 +47,17 @@ def _chunks() -> list[dict]:
 
 def test_e5_uses_asymmetric_prefixes_and_normalized_float32(monkeypatch):
     model = FakeModel()
-    monkeypatch.setattr(embedding, "get_model", lambda: model)
+    monkeypatch.setattr(embedding_model, "get_model", lambda: model)
 
-    documents = embedding.embed_documents(["tài liệu một", "tài liệu hai"])
-    query = embedding.embed_query("phòng A102 có bao nhiêu chỗ?")
+    documents = embedding_model.embed_documents(["tài liệu một", "tài liệu hai"])
+    query = embedding_model.embed_query("phòng A102 có bao nhiêu chỗ?")
 
     assert model.calls[0][0] == [
         "passage: tài liệu một",
         "passage: tài liệu hai",
     ]
     assert model.calls[1][0] == ["query: phòng A102 có bao nhiêu chỗ?"]
-    assert model.calls[0][1]["batch_size"] == embedding.DOCUMENT_BATCH_SIZE
+    assert model.calls[0][1]["batch_size"] == embedding_model.DOCUMENT_BATCH_SIZE
     assert documents.dtype == np.float32
     assert query.dtype == np.float32
     assert query.shape == (2,)
@@ -66,16 +67,18 @@ def test_e5_uses_asymmetric_prefixes_and_normalized_float32(monkeypatch):
 
 def test_empty_inputs_are_rejected():
     with pytest.raises(ValueError, match="documents"):
-        embedding.embed_documents([])
+        embedding_model.embed_documents([])
     with pytest.raises(ValueError, match="query"):
-        embedding.embed_query("   ")
+        embedding_model.embed_query("   ")
 
 
 def test_model_loader_uses_cached_snapshot_without_network(monkeypatch):
     FakeModelLoader.calls = []
-    monkeypatch.setattr(embedding, "_cached_model_path", lambda: "cached/snapshot")
+    monkeypatch.setattr(
+        embedding_model, "_cached_model_path", lambda: "cached/snapshot"
+    )
 
-    model = embedding._load_cached_or_download(FakeModelLoader)
+    model = embedding_model._load_cached_or_download(FakeModelLoader)
 
     assert model == "loaded-model"
     assert FakeModelLoader.calls == [("cached/snapshot", True)]
@@ -83,9 +86,9 @@ def test_model_loader_uses_cached_snapshot_without_network(monkeypatch):
 
 def test_model_loader_downloads_only_when_snapshot_is_missing(monkeypatch):
     FakeModelLoader.calls = []
-    monkeypatch.setattr(embedding, "_cached_model_path", lambda: None)
+    monkeypatch.setattr(embedding_model, "_cached_model_path", lambda: None)
 
-    model = embedding._load_cached_or_download(FakeModelLoader)
+    model = embedding_model._load_cached_or_download(FakeModelLoader)
 
     assert model == "loaded-model"
     assert FakeModelLoader.calls == [
@@ -102,9 +105,11 @@ def test_model_loader_redownloads_incomplete_cached_snapshot(monkeypatch):
             return "loaded-model"
 
     IncompleteCacheLoader.calls = []
-    monkeypatch.setattr(embedding, "_cached_model_path", lambda: "cached/snapshot")
+    monkeypatch.setattr(
+        embedding_model, "_cached_model_path", lambda: "cached/snapshot"
+    )
 
-    model = embedding._load_cached_or_download(IncompleteCacheLoader)
+    model = embedding_model._load_cached_or_download(IncompleteCacheLoader)
 
     assert model == "loaded-model"
     assert IncompleteCacheLoader.calls == [
@@ -116,15 +121,19 @@ def test_model_loader_redownloads_incomplete_cached_snapshot(monkeypatch):
 def test_embedding_artifacts_preserve_chunk_order_and_reload(tmp_path, monkeypatch):
     vectors = np.asarray([[3.0, 4.0], [0.0, 2.0]], dtype=np.float32)
     monkeypatch.setattr(
-        embedding,
+        embedding_artifacts,
         "embed_documents",
-        lambda texts: embedding.normalize_rows(vectors),
+        lambda texts: embedding_model.normalize_rows(vectors),
     )
 
     embeddings_path, index_path, manifest_path = (
-        embedding.build_embedding_artifacts(_chunks(), output_dir=tmp_path)
+        embedding_artifacts.build_embedding_artifacts(
+            _chunks(), output_dir=tmp_path
+        )
     )
-    loaded = embedding.validate_embedding_artifacts(_chunks(), output_dir=tmp_path)
+    loaded = embedding_artifacts.validate_embedding_artifacts(
+        _chunks(), output_dir=tmp_path
+    )
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
 
     assert embeddings_path.name == "embeddings.npy"
@@ -142,29 +151,59 @@ def test_embedding_artifacts_preserve_chunk_order_and_reload(tmp_path, monkeypat
 
 def test_validation_rejects_stale_chunk_artifacts(tmp_path, monkeypatch):
     monkeypatch.setattr(
-        embedding,
+        embedding_artifacts,
         "embed_documents",
         lambda texts: np.asarray([[1.0, 0.0], [0.0, 1.0]], dtype=np.float32),
     )
     chunks = _chunks()
-    embedding.build_embedding_artifacts(chunks, output_dir=tmp_path)
+    embedding_artifacts.build_embedding_artifacts(chunks, output_dir=tmp_path)
     chunks[0]["content_hash"] = "changed"
 
     with pytest.raises(ValueError, match="stale"):
-        embedding.validate_embedding_artifacts(chunks, output_dir=tmp_path)
+        embedding_artifacts.validate_embedding_artifacts(
+            chunks, output_dir=tmp_path
+        )
 
 
 def test_validation_rejects_stale_model_artifacts(tmp_path, monkeypatch):
     monkeypatch.setattr(
-        embedding,
+        embedding_artifacts,
         "embed_documents",
         lambda texts: np.asarray([[1.0, 0.0], [0.0, 1.0]], dtype=np.float32),
     )
-    embedding.build_embedding_artifacts(_chunks(), output_dir=tmp_path)
+    embedding_artifacts.build_embedding_artifacts(_chunks(), output_dir=tmp_path)
     manifest_path = tmp_path / "embedding_manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
     manifest["model"] = "different-model"
     manifest_path.write_text(json.dumps(manifest), encoding="utf-8")
 
     with pytest.raises(ValueError, match="model configuration"):
-        embedding.validate_embedding_artifacts(_chunks(), output_dir=tmp_path)
+        embedding_artifacts.validate_embedding_artifacts(
+            _chunks(), output_dir=tmp_path
+        )
+
+
+def test_onnx_provider_auto_prefers_cuda():
+    provider = embedding_model.select_onnx_provider(
+        configured="auto",
+        available=["CPUExecutionProvider", "CUDAExecutionProvider"],
+    )
+
+    assert provider == "CUDAExecutionProvider"
+
+
+def test_onnx_provider_auto_falls_back_to_cpu():
+    provider = embedding_model.select_onnx_provider(
+        configured="auto",
+        available=["CPUExecutionProvider"],
+    )
+
+    assert provider == "CPUExecutionProvider"
+
+
+def test_explicit_unavailable_onnx_provider_is_rejected():
+    with pytest.raises(RuntimeError, match="unavailable"):
+        embedding_model.select_onnx_provider(
+            configured="CUDAExecutionProvider",
+            available=["CPUExecutionProvider"],
+        )

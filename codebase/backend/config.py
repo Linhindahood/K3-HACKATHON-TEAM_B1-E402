@@ -29,7 +29,7 @@ EMBEDDING_MODEL_REVISION = os.getenv(
 EMBEDDING_BACKEND = os.getenv("EMBEDDING_BACKEND", "onnx")
 EMBEDDING_ONNX_FILE = os.getenv("EMBEDDING_ONNX_FILE", "onnx/model.onnx")
 EMBEDDING_ONNX_PROVIDER = os.getenv(
-    "EMBEDDING_ONNX_PROVIDER", "CPUExecutionProvider"
+    "EMBEDDING_ONNX_PROVIDER", "auto"
 )
 EMBEDDING_BATCH_SIZE = int(os.getenv("EMBEDDING_BATCH_SIZE", "32"))
 _faiss_index_dir = Path(

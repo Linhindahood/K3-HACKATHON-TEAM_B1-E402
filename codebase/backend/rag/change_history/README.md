@@ -24,6 +24,9 @@ minh - {task}
 ```
 
 Không rewrite commit cũ chỉ để đổi message vì sẽ làm thay đổi hash rollback.
+Không tạo commit riêng cho thay đổi nhỏ, format hoặc change-history. Các thay
+đổi này được giữ trong working tree và gom vào commit implementation có ý nghĩa
+tiếp theo.
 
 ## Index
 

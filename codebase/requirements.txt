@@ -7,6 +7,7 @@ pydantic>=2.6
 faiss-cpu>=1.8
 numpy>=1.26
 sentence-transformers[onnx]>=5.0,<6.0
+# GPU deployment: use sentence-transformers[onnx-gpu] instead of the ONNX CPU extra.
 
 # LLM providers — API key thuần, không train model
 openai>=1.40          # dùng chung cho OpenAI và OpenRouter (OpenRouter tương thích OpenAI API qua base_url riêng)

@@ -316,7 +316,7 @@ def write_artifacts(
 
 def build_index(chunks: list[dict]) -> tuple[Path, Path, Path]:
     """Build local E5 embeddings and an exact dense FAISS index."""
-    from backend.rag.embedding import build_embedding_artifacts
+    from backend.rag.embedding_artifacts import build_embedding_artifacts
 
     return build_embedding_artifacts(chunks)
 
