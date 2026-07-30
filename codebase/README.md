@@ -5,12 +5,42 @@ Scope sản phẩm: [`../docs/Requirement.md`](../docs/Requirement.md).
 
 ## Setup
 
+**macOS / Linux:**
+
 ```bash
 cd codebase
-python -m venv .venv && source .venv/bin/activate   # hoặc dùng .python-version với pyenv
+python3 -m venv .venv
+source .venv/bin/activate   # hoặc dùng .python-version với pyenv
 pip install -r requirements.txt
 cp .env.example .env   # rồi điền token/API key thật, KHÔNG commit .env
 ```
+
+**Windows (PowerShell):**
+
+```powershell
+cd codebase
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+# Nếu báo lỗi "cannot be loaded because running scripts is disabled":
+# chạy 1 lần: Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+pip install -r requirements.txt
+Copy-Item .env.example .env   # rồi điền token/API key thật, KHÔNG commit .env
+```
+
+**Windows (Command Prompt / cmd.exe):**
+
+```bat
+cd codebase
+python -m venv .venv
+.venv\Scripts\activate.bat
+pip install -r requirements.txt
+copy .env.example .env
+```
+
+> Lưu ý Windows: nếu `python` không nhận diện được, thử `py -3.11` thay cho `python`.
+> Sau khi activate, dấu nhắc dòng lệnh sẽ hiện `(.venv)` ở đầu — luôn kiểm tra dấu này
+> trước khi `pip install` hoặc chạy `uvicorn`/`python -m bot.main`/`streamlit`, tránh cài
+> nhầm ra ngoài venv hệ thống.
 
 ## Chạy từng phần
 
