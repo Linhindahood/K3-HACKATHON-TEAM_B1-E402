@@ -173,6 +173,7 @@ duyệt gửi chunk ra provider ngoài.
 | `lexical_store.py` | Giữ BM25S + ordered chunks sống trong process |
 | `fusion.py` | Chuẩn hóa score và weighted linear fusion |
 | `retriever.py` | Validate query, gọi embedder và điều phối hybrid search |
+| `pipeline.py` | Public entrypoint điều phối retrieve → grounded generate |
 
 `get_model()`, `get_dense_store()` và `get_lexical_store()` dùng
 strong-reference process cache. Sau `retriever.warm_up()`, model/session, FAISS,

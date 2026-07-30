@@ -1,8 +1,8 @@
-"""Route /ask — nhận câu hỏi, gọi retriever + generator."""
+"""HTTP contract for the RAG pipeline."""
 from fastapi import APIRouter
 from pydantic import BaseModel
 
-from backend.rag import generator, retriever
+from backend.rag import pipeline as rag_pipeline
 
 router = APIRouter()
 
@@ -19,6 +19,5 @@ class AskResponse(BaseModel):
 
 @router.post("/ask", response_model=AskResponse)
 def ask(payload: AskRequest) -> AskResponse:
-    passages = retriever.retrieve(payload.question)
-    result = generator.generate(payload.question, passages)
+    result = rag_pipeline.answer_question(payload.question)
     return AskResponse(**result)
