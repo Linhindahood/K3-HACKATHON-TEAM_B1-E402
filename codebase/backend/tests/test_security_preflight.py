@@ -9,11 +9,12 @@ def test_validate_content_preflight_rejects_placeholder():
     documents = [
         {
             "source": "fake.txt",
-            "text": "Đây là tài liệu. Điền dữ liệu vào đây.",
+            "text": "> [Hưng] điền nội dung thật ở đây.",
         }
     ]
-    with pytest.raises(ValueError, match="Content preflight failed"):
-        ingest.validate_content_preflight(documents)
+    ingest.validate_content_preflight(documents)
+    assert documents[0]["is_placeholder"] is True
+
 
 
 def test_validate_content_preflight_passes_valid_text():

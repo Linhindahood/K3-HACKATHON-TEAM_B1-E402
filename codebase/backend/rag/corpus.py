@@ -18,3 +18,14 @@ def load_chunks() -> list[dict]:
         raise RuntimeError(
             "Processed chunks are missing; run python -m backend.rag.ingest"
         ) from exc
+
+
+def load_manifest() -> dict:
+    manifest_path = config.KNOWLEDGE_BASE_PROCESSED_DIR / "manifest.json"
+    if not manifest_path.exists():
+        return {}
+    try:
+        return json.loads(manifest_path.read_text(encoding="utf-8"))
+    except Exception:
+        return {}
+

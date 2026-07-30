@@ -1,12 +1,14 @@
 {
-  "chunk_count": 89,
+  "build_id": "c7e447dd23ba2ec1",
+  "chunk_count": 93,
   "duplicate_count": 31,
+  "parser_version": "v1",
   "schema_version": "1",
   "sources": [
     {
-      "reason": "image requires a verified text sidecar from the data role",
-      "source": "1_map.jpg",
-      "status": "skipped"
+      "source": "1_map.png",
+      "source_hash": "2504f3d63011bd80f05f55477317dc8ad3ed9b099e37b98aaeeaee0d7ef08d0d",
+      "status": "indexed"
     },
     {
       "source": "2_Handbook_AI_IN_ACTION.txt",
@@ -14,9 +16,9 @@
       "status": "indexed"
     },
     {
-      "reason": "URL-only metadata",
       "source": "3_link_vi_tri.txt",
-      "status": "skipped"
+      "source_hash": "c00e82dc733c22006aca663f855b9b07c5f3a18be0d4c3c53b8450ebc4d86b05",
+      "status": "indexed"
     },
     {
       "source": "4_gio_mo_cua_library.txt",
@@ -24,9 +26,9 @@
       "status": "indexed"
     },
     {
-      "reason": "outside the current product scope",
       "source": "5_ket_qua_khoa_1.txt",
-      "status": "skipped"
+      "source_hash": "d4107ae05b7ff3d2fb801887918b9428e3d5fc4dc14d34cd3180fe876f01b518",
+      "status": "indexed"
     },
     {
       "source": "6_loai_phong_va_huong_dan_dat_phong.txt",
@@ -34,17 +36,17 @@
       "status": "indexed"
     },
     {
-      "reason": "placeholder or source not approved for RAG",
+      "reason": "unindexed",
       "source": "noi_quy.md",
       "status": "skipped"
     },
     {
-      "reason": "placeholder or source not approved for RAG",
+      "reason": "unindexed",
       "source": "tien_ich.md",
       "status": "skipped"
     },
     {
-      "reason": "placeholder or source not approved for RAG",
+      "reason": "unindexed",
       "source": "vi_tri_co_so_vat_chat.md",
       "status": "skipped"
     }

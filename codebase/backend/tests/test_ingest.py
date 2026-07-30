@@ -13,14 +13,19 @@ def _build_chunks() -> tuple[list[dict], list[dict]]:
 
 def test_loader_uses_only_in_scope_text_sources():
     documents = ingest.load_raw_documents()
+    sources = {document["source"] for document in documents}
 
-    assert {document["source"] for document in documents} == {
-        "2_Handbook_AI_IN_ACTION.txt",
-        "4_gio_mo_cua_library.txt",
-        "6_loai_phong_va_huong_dan_dat_phong.txt",
-    }
+    assert "2_Handbook_AI_IN_ACTION.txt" in sources
+    assert "4_gio_mo_cua_library.txt" in sources
+    assert "6_loai_phong_va_huong_dan_dat_phong.txt" in sources
+    assert "1_map.png" in sources
     assert all(document["text"].strip() for document in documents)
     assert all("TODO" not in document["text"] for document in documents)
+
+
+def test_slug_transliterates_vietnamese_d():
+    assert ingest._slug("hướng dẫn đặt phòng") == "huong-dan-dat-phong"
+    assert ingest._slug("Đặc biệt") == "dac-biet"
 
 
 def test_chunking_preserves_data_semantics():
@@ -63,6 +68,8 @@ def test_room_chunks_are_atomic_and_deduplicated():
     ]
     assert len(room_a102) == 1
     assert room_a102[0]["source"] == "4_gio_mo_cua_library.txt"
+    assert "source_aliases" in room_a102[0]
+    assert "6_loai_phong_va_huong_dan_dat_phong.txt" in room_a102[0]["source_aliases"]
     assert "Sức chứa: 8 chỗ" in room_a102[0]["text"]
     assert "Phòng A103:" not in room_a102[0]["text"]
 
@@ -104,10 +111,9 @@ def test_artifact_output_is_reproducible(tmp_path):
 
     assert saved_chunks == chunks
     assert manifest["schema_version"] == ingest.SCHEMA_VERSION
+    assert manifest["parser_version"] == "v1"
+    assert "build_id" in manifest
     assert manifest["chunk_count"] == len(chunks)
     assert manifest["duplicate_count"] >= 1
-    assert any(
-        item["source"] in ("1_map.jpg", "1_map.png") and item["status"] == "skipped"
-        for item in manifest["sources"]
-    )
+
 

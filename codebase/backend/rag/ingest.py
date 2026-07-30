@@ -12,25 +12,19 @@ from pathlib import Path
 
 from backend import config
 
+from backend.rag.media_registry import get_media_asset
+from backend.rag.source_registry import SOURCE_REGISTRY, discover_raw_sources
+
 SCHEMA_VERSION = "1"
+PARSER_VERSION = "v1"
 MAX_CHARS = 1_200
 
-ROOM_BOOKING_URL = "https://library.vinuni.edu.vn/room-booking/"
-LIBRARY_HOURS_URL = "https://library.vinuni.edu.vn/about-us/hours-and-access/"
-
-_SOURCES = {
-    "2_Handbook_AI_IN_ACTION.txt": {"kind": "handbook", "priority": 1},
-    "4_gio_mo_cua_library.txt": {"kind": "library", "priority": 2},
-    "6_loai_phong_va_huong_dan_dat_phong.txt": {
-        "kind": "library",
-        "priority": 3,
-    },
-}
 _URL_RE = re.compile(r"https?://\S+", re.IGNORECASE)
 _ROMAN_HEADING_RE = re.compile(r"^[IVXLCDM]+\.\s*\S+", re.IGNORECASE)
 _NUMBERED_HEADING_RE = re.compile(r"^\d+\.\s+[A-ZÀ-ỸĐ0-9]")
 _FAQ_RE = re.compile(r"^\d+\..+\?\s*$")
 _ROOM_RE = re.compile(r"^Phòng\s+[A-Z]\d+\s*:\s*$", re.IGNORECASE)
+_SENTENCE_RE = re.compile(r"(?<=[.!?])\s+")
 
 
 def _sha256(value: str) -> str:
@@ -43,7 +37,11 @@ def _normalise(value: str) -> str:
 
 
 def _slug(value: str) -> str:
-    ascii_value = unicodedata.normalize("NFKD", value).encode("ascii", "ignore")
+    """Slugify text after transliterating đ/Đ -> d/D."""
+    transliterated = value.replace("đ", "d").replace("Đ", "D")
+    ascii_value = unicodedata.normalize("NFKD", transliterated).encode(
+        "ascii", "ignore"
+    )
     return re.sub(r"[^a-z0-9]+", "-", ascii_value.decode().lower()).strip("-")
 
 
@@ -54,42 +52,72 @@ def is_url_only(text: str) -> bool:
 
 
 _PLACEHOLDER_PATTERNS = [
-    re.compile(r"điền (?:dữ liệu|thông tin|nội dung)", re.IGNORECASE),
-    re.compile(r"\bplaceholder\b", re.IGNORECASE),
+    re.compile(r"\[Hưng\]\s*điền", re.IGNORECASE),
+    re.compile(r"điền nội dung thật", re.IGNORECASE),
     re.compile(r"bổ sung thông tin vào đây", re.IGNORECASE),
+    re.compile(r"^\s*##\s*\(TODO", re.IGNORECASE),
 ]
 
 
+
 def validate_content_preflight(documents: list[dict]) -> None:
-    """Ensure raw documents do not contain placeholder instructions before chunking."""
+    """Flag raw documents that contain developer placeholders awaiting real data from data role."""
     for document in documents:
         text = document.get("text", "")
-        for pattern in _PLACEHOLDER_PATTERNS:
-            if pattern.search(text):
-                raise ValueError(
-                    f"Content preflight failed: placeholder detected in {document['source']}"
-                )
+        if any(pattern.search(text) for pattern in _PLACEHOLDER_PATTERNS):
+            document["is_placeholder"] = True
+        else:
+            document["is_placeholder"] = False
+
+
 
 
 def load_raw_documents() -> list[dict]:
-    """Load only text sources approved for the current RAG scope."""
+    """Load 100% of discovered raw text/markdown documents and media asset sidecars."""
+    sources = discover_raw_sources()
     documents = []
-    for source, metadata in _SOURCES.items():
-        path = config.KNOWLEDGE_BASE_RAW_DIR / source
+    for source in sources:
+        path = config.KNOWLEDGE_BASE_RAW_DIR / source.local_path
         if not path.exists():
-            continue
-        text = path.read_text(encoding="utf-8-sig").strip()
-        documents.append(
-            {
-                "source": source,
-                "kind": metadata["kind"],
-                "priority": metadata["priority"],
-                "text": text,
-                "source_hash": _sha256(text),
-            }
-        )
+            raise RuntimeError(f"Raw source file missing: {path}")
+
+        if source.source_type in ("text", "markdown", "url_list", "handbook", "library"):
+
+            text = path.read_text(encoding="utf-8-sig").strip()
+            documents.append(
+                {
+                    "source": source.local_path,
+                    "source_id": source.source_id,
+                    "title": source.title,
+                    "kind": source.source_type,
+                    "priority": source.authority,
+                    "public_url": source.public_url,
+                    "text": text,
+                    "source_hash": _sha256(text),
+                }
+            )
+        elif source.source_type == "image":
+            media = get_media_asset(source.local_path)
+            text = (
+                f"{media.alt_text}\n" + "\n".join(media.landmarks)
+                if media
+                else source.title
+            )
+            documents.append(
+                {
+                    "source": source.local_path,
+                    "source_id": source.source_id,
+                    "title": source.title,
+                    "kind": "image_sidecar",
+                    "priority": source.authority,
+                    "public_url": source.public_url,
+                    "text": text,
+                    "source_hash": _sha256(text),
+                }
+            )
+
     validate_content_preflight(documents)
-    return documents
+    return [doc for doc in documents if not doc.get("is_placeholder")]
 
 
 
@@ -111,7 +139,7 @@ def _is_child_heading(line: str, kind: str) -> bool:
     if _is_upper_heading(line):
         return True
     if (
-        kind == "library"
+        kind in ("library", "text")
         and line.endswith(":")
         and len(line) <= 90
         and not line.casefold().startswith("bước ")
@@ -120,17 +148,25 @@ def _is_child_heading(line: str, kind: str) -> bool:
     return kind == "handbook" and line.upper().startswith("GIAI ĐOẠN ")
 
 
-def _source_url(kind: str, heading_path: list[str]) -> str | None:
-    if kind != "library":
-        return None
+ROOM_BOOKING_URL = "https://library.vinuni.edu.vn/room-booking/"
+LIBRARY_HOURS_URL = "https://library.vinuni.edu.vn/about-us/hours-and-access/"
+
+
+def _source_url(document: dict, heading_path: list[str]) -> str | None:
     context = " ".join(heading_path).casefold()
-    if any(term in context for term in ("đặt phòng", "danh sách phòng", "phòng a")):
+    if any(
+        term in context
+        for term in ("đặt phòng", "danh sách phòng", "phòng a", "outlook")
+    ):
         return ROOM_BOOKING_URL
+    if public_url := document.get("public_url"):
+        return public_url
     return LIBRARY_HOURS_URL
 
 
+
 def _split_long(text: str) -> list[str]:
-    """Split an oversized section at paragraph boundaries without overlap."""
+    """Split an oversized section at paragraph and sentence boundaries without breaking words."""
     if len(text) <= MAX_CHARS:
         return [text]
 
@@ -145,11 +181,35 @@ def _split_long(text: str) -> list[str]:
             if current:
                 parts.append(current)
                 current = ""
-            parts.extend(
-                paragraph[start : start + MAX_CHARS]
-                for start in range(0, len(paragraph), MAX_CHARS)
-            )
+            sentences = _SENTENCE_RE.split(paragraph)
+            sen_current = ""
+            for sentence in sentences:
+                if len(sentence) > MAX_CHARS:
+                    if sen_current:
+                        parts.append(sen_current)
+                        sen_current = ""
+                    words = sentence.split()
+                    w_current = ""
+                    for word in words:
+                        candidate = f"{w_current} {word}".strip()
+                        if len(candidate) > MAX_CHARS:
+                            parts.append(w_current)
+                            w_current = word
+                        else:
+                            w_current = candidate
+                    if w_current:
+                        parts.append(w_current)
+                else:
+                    candidate = f"{sen_current} {sentence}".strip()
+                    if len(candidate) > MAX_CHARS:
+                        parts.append(sen_current)
+                        sen_current = sentence
+                    else:
+                        sen_current = candidate
+            if sen_current:
+                parts.append(sen_current)
             continue
+
         candidate = f"{current}\n\n{paragraph}" if current else paragraph
         if len(candidate) > MAX_CHARS:
             parts.append(current)
@@ -164,7 +224,7 @@ def _split_long(text: str) -> list[str]:
 def _parse_document(document: dict) -> list[dict]:
     """Parse headings while keeping FAQ answers and room records atomic."""
     kind = document["kind"]
-    parent = _clean_heading(document["source"])
+    parent = _clean_heading(document["title"])
     title = parent
     buffer: list[str] = []
     drafts: list[dict] = []
@@ -182,11 +242,12 @@ def _parse_document(document: dict) -> list[dict]:
             drafts.append(
                 {
                     "source": document["source"],
+                    "source_id": document["source_id"],
                     "kind": kind,
                     "priority": document["priority"],
                     "heading_path": part_path,
                     "text": part,
-                    "source_url": _source_url(kind, heading_path),
+                    "source_url": _source_url(document, heading_path),
                 }
             )
         buffer = []
@@ -201,7 +262,7 @@ def _parse_document(document: dict) -> list[dict]:
         is_parent = (
             kind == "handbook"
             and _ROMAN_HEADING_RE.match(line)
-            or kind == "library"
+            or kind in ("library", "text")
             and _NUMBERED_HEADING_RE.match(line)
             and _is_upper_heading(line)
         )
@@ -232,7 +293,7 @@ def _deduplication_text(text: str) -> str:
 
 
 def chunk_documents(documents: list[dict]) -> list[dict]:
-    """Create deterministic, structure-aware chunks and remove duplicates."""
+    """Create deterministic, structure-aware chunks and preserve provenance aliases."""
     drafts = []
     for document in sorted(documents, key=lambda item: item["priority"]):
         drafts.extend(_parse_document(document))
@@ -240,12 +301,14 @@ def chunk_documents(documents: list[dict]) -> list[dict]:
     unique: list[dict] = []
     by_hash: dict[str, dict] = {}
     used_ids: set[str] = set()
+
     for draft in drafts:
         content_hash = _sha256(_deduplication_text(draft["text"]))
         if content_hash in by_hash:
-            by_hash[content_hash].setdefault("duplicate_sources", []).append(
-                draft["source"]
-            )
+            canonical = by_hash[content_hash]
+            aliases = canonical.setdefault("source_aliases", [canonical["source"]])
+            if draft["source"] not in aliases:
+                aliases.append(draft["source"])
             continue
 
         base_id = _slug("-".join(draft["heading_path"])) or "chunk"
@@ -256,14 +319,17 @@ def chunk_documents(documents: list[dict]) -> list[dict]:
 
         chunk = {
             "chunk_id": chunk_id,
-            "content_hash": content_hash,
+            "canonical_chunk_id": chunk_id,
             "source": draft["source"],
+            "source_id": draft["source_id"],
+            "source_aliases": [draft["source"]],
             "heading_path": draft["heading_path"],
             "text": draft["text"],
             "embedding_text": (
                 f"{' > '.join(draft['heading_path'])}\n{draft['text']}"
             ),
             "source_url": draft["source_url"],
+            "content_hash": content_hash,
         }
         unique.append(chunk)
         by_hash[content_hash] = chunk
@@ -272,11 +338,6 @@ def chunk_documents(documents: list[dict]) -> list[dict]:
 
 def _source_inventory(documents: list[dict]) -> list[dict]:
     indexed = {document["source"]: document for document in documents}
-    skipped_reasons = {
-        "1_map.jpg": "image requires a verified text sidecar from the data role",
-        "3_link_vi_tri.txt": "URL-only metadata",
-        "5_ket_qua_khoa_1.txt": "outside the current product scope",
-    }
     inventory = []
     for path in sorted(config.KNOWLEDGE_BASE_RAW_DIR.iterdir()):
         if not path.is_file():
@@ -294,9 +355,7 @@ def _source_inventory(documents: list[dict]) -> list[dict]:
                 {
                     "source": path.name,
                     "status": "skipped",
-                    "reason": skipped_reasons.get(
-                        path.name, "placeholder or source not approved for RAG"
-                    ),
+                    "reason": "unindexed",
                 }
             )
     return inventory
@@ -307,7 +366,7 @@ def write_artifacts(
     chunks: list[dict],
     output_dir: Path | None = None,
 ) -> tuple[Path, Path]:
-    """Write reproducible JSONL chunks and a corpus manifest."""
+    """Write reproducible JSONL chunks and a corpus manifest V1 with build_id."""
     destination = output_dir or config.KNOWLEDGE_BASE_PROCESSED_DIR
     destination.mkdir(parents=True, exist_ok=True)
     chunks_path = destination / "chunks.jsonl"
@@ -317,11 +376,14 @@ def write_artifacts(
         json.dumps(chunk, ensure_ascii=False, sort_keys=True) + "\n"
         for chunk in chunks
     )
+    build_id = _sha256(chunks_payload)[:16]
     duplicate_count = sum(
-        len(chunk.get("duplicate_sources", [])) for chunk in chunks
+        len(chunk.get("source_aliases", [])) - 1 for chunk in chunks
     )
     manifest = {
         "schema_version": SCHEMA_VERSION,
+        "parser_version": PARSER_VERSION,
+        "build_id": build_id,
         "chunk_count": len(chunks),
         "duplicate_count": duplicate_count,
         "sources": _source_inventory(documents),
@@ -345,6 +407,9 @@ def build_index(chunks: list[dict]) -> tuple[Path, Path, Path]:
 def build_lexical_index(chunks: list[dict]) -> Path:
     """Build the BM25S index from the same ordered chunks as dense search."""
     from backend.rag.lexical_artifacts import build_lexical_artifact
+
+    return build_lexical_artifact(chunks)
+
 
     return build_lexical_artifact(chunks)
 

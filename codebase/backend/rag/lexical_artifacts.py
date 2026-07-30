@@ -67,11 +67,13 @@ def build_lexical_artifact(
     retriever.save(destination, show_progress=False)
     manifest = {
         "schema_version": SCHEMA_VERSION,
+        "build_id": _chunks_hash(ordered_chunks)[:16],
         "tokenizer_version": TOKENIZER_VERSION,
         "chunk_count": len(chunks),
         "chunks_hash": _chunks_hash(ordered_chunks),
         "ordered_chunks": ordered_chunks,
     }
+
     manifest_path = destination / "lexical_manifest.json"
     manifest_path.write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",

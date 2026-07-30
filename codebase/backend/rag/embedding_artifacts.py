@@ -78,6 +78,7 @@ def build_embedding_artifacts(
 
     manifest = {
         "schema_version": SCHEMA_VERSION,
+        "build_id": _chunks_hash(ordered_chunks)[:16],
         "provider": config.EMBEDDING_PROVIDER,
         "model": config.EMBEDDING_MODEL,
         "model_revision": config.EMBEDDING_MODEL_REVISION,
@@ -93,6 +94,7 @@ def build_embedding_artifacts(
         "chunks_hash": _chunks_hash(ordered_chunks),
         "ordered_chunks": ordered_chunks,
     }
+
     manifest_path.write_text(
         json.dumps(manifest, ensure_ascii=False, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
