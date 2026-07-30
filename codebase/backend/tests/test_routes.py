@@ -1,0 +1,21 @@
+"""Tests for the HTTP-to-RAG coordinator boundary."""
+from __future__ import annotations
+
+from backend.api import routes
+
+
+def test_ask_route_returns_pipeline_contract(monkeypatch):
+    expected = {
+        "answer": "grounded answer",
+        "sources": ["source#chunk"],
+        "has_evidence": True,
+    }
+    monkeypatch.setattr(
+        routes.rag_pipeline,
+        "answer_question",
+        lambda question: expected,
+    )
+
+    response = routes.ask(routes.AskRequest(question="câu hỏi Discord"))
+
+    assert response.model_dump() == expected
