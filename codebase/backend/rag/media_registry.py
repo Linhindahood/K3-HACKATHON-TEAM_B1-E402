@@ -27,7 +27,20 @@ MEDIA_REGISTRY: dict[str, MediaAsset] = {
             "Tòa nhà B - Khu hành chính",
             "Khu tự học sinh viên",
         ),
-    )
+    ),
+    "1_map.jpg": MediaAsset(
+        asset_id="vinuni-campus-map-2024",
+        source_id="vinuni-campus-map",
+        attachment_key="1_map.jpg",
+        media_type="image/jpeg",
+        alt_text="Bản đồ các tòa nhà và phòng học VinUniversity",
+        landmarks=(
+            "Tòa nhà A - Thư viện & Phòng học",
+            "Phòng A101, A102, A103",
+            "Tòa nhà B - Khu hành chính",
+            "Khu tự học sinh viên",
+        ),
+    ),
 }
 
 

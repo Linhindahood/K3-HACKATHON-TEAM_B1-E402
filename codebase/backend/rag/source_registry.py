@@ -32,6 +32,17 @@ SOURCE_REGISTRY: dict[str, SourceMetadata] = {
         verified_at="2026-07-30",
         valid_from="2026-01-01",
     ),
+    "1_map.jpg": SourceMetadata(
+        source_id="vinuni-campus-map",
+        title="Bản đồ cơ sở vật chất VinUniversity",
+        local_path="1_map.jpg",
+        public_url="https://vinuni.edu.vn/campus-map/",
+        allowed_domains=("vinuni.edu.vn",),
+        source_type="image",
+        authority=90,
+        verified_at="2026-07-30",
+        valid_from="2026-01-01",
+    ),
     "2_Handbook_AI_IN_ACTION.txt": SourceMetadata(
         source_id="handbook-ai-in-action",
         title="Handbook AI in Action",

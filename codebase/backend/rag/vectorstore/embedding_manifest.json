@@ -1,8 +1,8 @@
 {
   "backend": "onnx",
-  "build_id": "12e6851a9abf03bc",
-  "chunk_count": 93,
-  "chunks_hash": "12e6851a9abf03bc34b19df10427fa758565ae5bf00d40daf28fc8c19cc61463",
+  "build_id": "cac01c5dc131d9e5",
+  "chunk_count": 86,
+  "chunks_hash": "cac01c5dc131d9e5d71f335635ddca48ae8eabe7694a6995651d52f03532fbc6",
   "dimension": 384,
   "document_prefix": "passage: ",
   "dtype": "float32",
@@ -27,34 +27,6 @@
     {
       "chunk_id": "ban-do-co-so-vat-chat-vinuniversity",
       "content_hash": "04db05c1f33e005d7816e2b6525414ce8272214cbfb92f0df376b0ca6f66f3c5"
-    },
-    {
-      "chunk_id": "gio-mo-cua-thu-vien-vinuniversity-thu-vien-vinuniversity",
-      "content_hash": "f1c7effb3df2c0152b0853eb1ccca774d6e4ee8378349d39711b2dbbf8e35dcc"
-    },
-    {
-      "chunk_id": "gio-mo-cua-thu-vien-vinuniversity-gio-mo-cua-quyen-truy-cap",
-      "content_hash": "874011bdf379fdfa08fbbd49e2d58b030f6afba51dec0593865294c60de1c72e"
-    },
-    {
-      "chunk_id": "gio-mo-cua",
-      "content_hash": "425d865584a32d4e045eea5413fbfde78ae6d2c06127a09abac138e93b7648ed"
-    },
-    {
-      "chunk_id": "gio-mo-cua-gio-mo-cua-tu-thang-7-den-thang-8",
-      "content_hash": "07e341c34f91fd0621c063422e30d7b5818510930c8ecd6a4d76a5961761be89"
-    },
-    {
-      "chunk_id": "gio-mo-cua-gio-mo-cua-tu-thang-9",
-      "content_hash": "1783a2d9fd8333caaf8e326a1a3ed2fa77c2ad5c2ce56f72c4d8ba3eb2af6b17"
-    },
-    {
-      "chunk_id": "quyen-truy-cap-thu-vien",
-      "content_hash": "88ee66b8a3561e78f7df987e3960222068f8b0f0af5361efa309ae6ca33202aa"
-    },
-    {
-      "chunk_id": "quyen-truy-cap-thu-vien-dia-diem",
-      "content_hash": "fe4152e3443991e3dc2bca04fb552e50be10fd94e16b24afe3342f373c3008bd"
     },
     {
       "chunk_id": "chinh-sach-dat-phong-hoc-nhom",

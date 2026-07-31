@@ -4,3 +4,5 @@
 > Mỗi mục dùng heading `##` — `rag/ingest.py` sẽ chunk theo heading này.
 
 ## (TODO)
+
+dđddBand

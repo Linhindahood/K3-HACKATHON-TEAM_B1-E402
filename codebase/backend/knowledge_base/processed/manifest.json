@@ -1,12 +1,12 @@
 {
-  "build_id": "c7e447dd23ba2ec1",
-  "chunk_count": 93,
-  "duplicate_count": 31,
+  "build_id": "bbaf54a0792d2061",
+  "chunk_count": 86,
+  "duplicate_count": 0,
   "parser_version": "v1",
   "schema_version": "1",
   "sources": [
     {
-      "source": "1_map.png",
+      "source": "1_map.jpg",
       "source_hash": "2504f3d63011bd80f05f55477317dc8ad3ed9b099e37b98aaeeaee0d7ef08d0d",
       "status": "indexed"
     },
@@ -18,11 +18,6 @@
     {
       "source": "3_link_vi_tri.txt",
       "source_hash": "c00e82dc733c22006aca663f855b9b07c5f3a18be0d4c3c53b8450ebc4d86b05",
-      "status": "indexed"
-    },
-    {
-      "source": "4_gio_mo_cua_library.txt",
-      "source_hash": "9c98df587b6da7f3394ad7d9c562a941b1d2a9cb36cdef7d02d2f354ea539791",
       "status": "indexed"
     },
     {
