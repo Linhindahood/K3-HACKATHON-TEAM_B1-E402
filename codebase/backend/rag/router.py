@@ -32,27 +32,30 @@ _FAST_IDENTITY_PATTERNS = [
     re.compile(r"^bạn\s+tên\s+là\s+gì$", re.IGNORECASE),
 ]
 
-_FAST_UNSUPPORTED_BOOKING_PATTERNS = [
+_BOOKING_TOPIC_PATTERN = re.compile(
+    r"\b(?:đặt|dat)\s+(?:phòng|phong)\b",
+    re.IGNORECASE,
+)
+
+_BOOKING_DELEGATION_PATTERNS = [
     re.compile(
-        r"^(?:đặt|dat|hủy|huy)\s+phòng\b.*\b"
+        r"\b(?:bạn|ban|bot)\s+(?:có thể\s+|co the\s+)?"
+        r"(?:đặt|dat)\s+(?:phòng|phong)\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\b(?:đặt|dat)\s+(?:phòng|phong)\b.*\b"
         r"(?:giúp|giup|hộ|ho)\s+(?:tôi|toi|mình|minh)\b",
         re.IGNORECASE,
     ),
 ]
 
-_FAST_BOOKING_GUIDE_PATTERNS = [
+_BOOKING_GUIDE_PATTERNS = [
     re.compile(
-        r"\b(?:cách|cach)\s+(?:tự\s+)?(?:đặt|dat)\s+phòng\b",
-        re.IGNORECASE,
-    ),
-    re.compile(
-        r"\b(?:hướng dẫn|huong dan|làm thế nào|lam the nao|làm sao|lam sao)\b"
-        r".*\b(?:đặt|dat)\s+phòng\b",
-        re.IGNORECASE,
-    ),
-    re.compile(
-        r"\b(?:đặt|dat)\s+phòng\b.*"
-        r"\b(?:như thế nào|nhu the nao|ra sao)\b",
+        r"\b(?:tra(?:\s+cứu)?|tra\s+cuu|xem|tìm\s+hiểu|tim\s+hieu|"
+        r"hướng\s+dẫn|huong\s+dan|chỉ|chi|cách|cach|"
+        r"làm\s+sao|lam\s+sao|làm\s+thế\s+nào|lam\s+the\s+nao|"
+        r"quy\s+trình|quy\s+trinh|như\s+thế\s+nào|nhu\s+the\s+nao)\b",
         re.IGNORECASE,
     ),
 ]
@@ -101,10 +104,12 @@ def _fast_path_route(cleaned: str) -> Intent | None:
     for pattern in _FAST_IDENTITY_PATTERNS:
         if pattern.match(cleaned):
             return Intent.IDENTITY
-    for pattern in _FAST_UNSUPPORTED_BOOKING_PATTERNS:
+    if not _BOOKING_TOPIC_PATTERN.search(cleaned):
+        return None
+    for pattern in _BOOKING_DELEGATION_PATTERNS:
         if pattern.search(cleaned):
             return Intent.UNSUPPORTED_ACTION
-    for pattern in _FAST_BOOKING_GUIDE_PATTERNS:
+    for pattern in _BOOKING_GUIDE_PATTERNS:
         if pattern.search(cleaned):
             return Intent.FACTUAL
     return None
