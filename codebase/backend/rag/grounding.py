@@ -5,6 +5,8 @@ import re
 
 from backend import config
 
+from backend.rag.source_registry import get_source_metadata
+
 _URL_RE = re.compile(r"https?://[^\s<>\]]+")
 _CITATION_RE = re.compile(r"\[S(\d+)\]")
 _URL_TRAILING = ".,;:!?)]}"
@@ -71,13 +73,23 @@ def sanitize_urls(answer: str, passages: list[dict]) -> str:
 
 def attach_sources(answer: str, passages: list[dict]) -> str:
     lines = []
+    seen_sources = set()
     seen_urls = set()
     for passage in passages:
         source = passage["source"]
-        url = passage.get("source_url")
+        raw_filename = source.split("#")[0]
+        if source in seen_sources:
+            continue
+        seen_sources.add(source)
+
+        meta = get_source_metadata(raw_filename)
+        url = passage.get("source_url") or meta.get("public_url")
         if url and url not in seen_urls and url not in answer:
             lines.append(f"- [{source}]({url})")
             seen_urls.add(url)
         else:
             lines.append(f"- {source}")
+
     return f"{answer.rstrip()}\n\nNguồn tham khảo:\n" + "\n".join(lines)
+
+

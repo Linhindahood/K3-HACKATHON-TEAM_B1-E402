@@ -1,6 +1,7 @@
 """Thin orchestration for grounded answer generation."""
 from __future__ import annotations
 
+from backend.rag.citation_validator import validate_and_sanitize_citations
 from backend.rag.evidence_gate import has_sufficient_evidence
 from backend.rag.grounding import (
     attach_sources,
@@ -16,7 +17,6 @@ from backend.rag.prompt import (
     SYSTEM_PROMPT,
     build_user_prompt,
 )
-
 from backend.rag.response_policy import (
     NO_EVIDENCE_ANSWER,
     PROVIDER_FAILURE_ANSWER,
@@ -26,10 +26,8 @@ from backend.rag.response_policy import (
 FALLBACK_ANSWER = NO_EVIDENCE_ANSWER
 
 
-
 def _fallback() -> dict:
     return {"answer": NO_EVIDENCE_ANSWER, "sources": [], "has_evidence": False}
-
 
 
 def generate(question: str, passages: list[dict]) -> dict:
@@ -42,7 +40,7 @@ def generate(question: str, passages: list[dict]) -> dict:
 
     prompt = build_user_prompt(question, selected)
     try:
-        answer = generate_text(SYSTEM_PROMPT, prompt)
+        raw_answer = generate_text(SYSTEM_PROMPT, prompt)
     except LLMProviderError:
         return {
             "answer": PROVIDER_FAILURE_ANSWER,
@@ -50,19 +48,29 @@ def generate(question: str, passages: list[dict]) -> dict:
             "has_evidence": True,
         }
 
-    if answer.strip() == INSUFFICIENT_CONTEXT_TOKEN:
+    if raw_answer.strip() == INSUFFICIENT_CONTEXT_TOKEN:
         return _fallback()
 
-    cited = cited_passages(answer, selected)
-    if not cited:
+    cleaned_answer, valid_sources, is_valid = validate_and_sanitize_citations(
+        raw_answer, selected
+    )
+    if not is_valid:
         return _fallback()
-    answer = sanitize_citations(answer, len(selected))
+
+    cited = cited_passages(cleaned_answer, selected)
+    if not cited:
+
+        cited = selected[:1]
+    final_sources = valid_sources if valid_sources else source_ids(cited)
+
+    answer = sanitize_citations(cleaned_answer, len(selected))
     answer = sanitize_urls(answer, cited)
     if not answer:
         return _fallback()
 
     return {
         "answer": attach_sources(answer, cited),
-        "sources": source_ids(cited),
+        "sources": final_sources,
         "has_evidence": True,
     }
+

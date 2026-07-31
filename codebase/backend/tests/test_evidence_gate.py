@@ -36,3 +36,20 @@ def test_borderline_dense_score_with_zero_lexical_returns_false():
         "lexical_score": 0.0,
     }
     assert has_sufficient_evidence([passage]) is False
+
+
+def test_evaluate_evidence_signals_computes_margin_and_agreement():
+    from backend.rag.evidence_gate import evaluate_evidence_signals
+
+    passages = [
+        {"text": "p1", "dense_score": 0.9, "lexical_score": 2.5},
+        {"text": "p2", "dense_score": 0.7, "lexical_score": 1.0},
+    ]
+    signals = evaluate_evidence_signals(passages)
+    assert signals["has_passages"] is True
+    assert signals["top_dense_score"] == 0.9
+    assert abs(signals["dense_margin"] - 0.2) < 1e-5
+    assert signals["top_lexical_score"] == 2.5
+    assert signals["agreement"] is True
+
+

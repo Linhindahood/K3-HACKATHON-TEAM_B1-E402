@@ -142,3 +142,20 @@ def discover_raw_sources(raw_dir: Path | None = None) -> list[SourceMetadata]:
             )
         discovered.append(SOURCE_REGISTRY[filename])
     return discovered
+
+
+def get_source_metadata(filename: str) -> dict:
+    """Retrieve metadata dict for registered source filename."""
+    meta = SOURCE_REGISTRY.get(filename)
+    if meta:
+        return {
+            "source_id": meta.source_id,
+            "title": meta.title,
+            "local_path": meta.local_path,
+            "public_url": meta.public_url,
+            "allowed_domains": meta.allowed_domains,
+            "authority": meta.authority,
+        }
+    return {"title": filename, "public_url": None, "allowed_domains": ()}
+
+
