@@ -1,2 +1,4 @@
 # Logs
 bot/logs/
+backend/logs/
+*.jsonl

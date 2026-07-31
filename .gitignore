@@ -19,6 +19,7 @@ codebase/backend/rag/vectorstore/*
 !codebase/backend/rag/vectorstore/.gitkeep
 codebase/backend/knowledge_base/processed/*
 !codebase/backend/knowledge_base/processed/.gitkeep
+codebase/backend/knowledge_base/raw/*
 
 # Data thật (bản sao từ data/docs)
 codebase/backend/knowledge_base/raw/
