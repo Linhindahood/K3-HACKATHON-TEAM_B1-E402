@@ -35,14 +35,21 @@ def test_openai_uses_responses_api(monkeypatch):
         )
     )
     monkeypatch.setattr(llm_provider, "_get_openai_client", lambda: fake_client)
-    monkeypatch.setattr(llm_provider.config, "LLM_MODEL", "test-model")
+    monkeypatch.setattr(llm_provider.config, "LLM_MODEL", "gpt-4o-mini")
 
     answer = llm_provider._openai_text("system", "user")
 
     assert answer == "grounded"
     assert calls[0]["instructions"] == "system"
     assert calls[0]["input"] == "user"
+    assert "reasoning" not in calls[0]
+
+    # Test reasoning model includes reasoning effort
+    calls.clear()
+    monkeypatch.setattr(llm_provider.config, "LLM_MODEL", "o1-mini")
+    llm_provider._openai_text("system", "user")
     assert calls[0]["reasoning"] == {"effort": "low"}
+
 
 
 def test_openrouter_uses_chat_completions(monkeypatch):

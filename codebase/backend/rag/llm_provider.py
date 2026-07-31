@@ -47,14 +47,18 @@ def _get_gemini_client():
 
 
 def _openai_text(system_prompt: str, user_prompt: str) -> str:
-    response = _get_openai_client().responses.create(
-        model=_require(config.LLM_MODEL, "LLM_MODEL"),
-        instructions=system_prompt,
-        input=user_prompt,
-        max_output_tokens=config.LLM_MAX_OUTPUT_TOKENS,
-        reasoning={"effort": "low"},
-    )
+    model_name = _require(config.LLM_MODEL, "LLM_MODEL")
+    kwargs = {
+        "model": model_name,
+        "instructions": system_prompt,
+        "input": user_prompt,
+        "max_output_tokens": config.LLM_MAX_OUTPUT_TOKENS,
+    }
+    if model_name.casefold().startswith(("o1", "o3")):
+        kwargs["reasoning"] = {"effort": "low"}
+    response = _get_openai_client().responses.create(**kwargs)
     return response.output_text
+
 
 
 def _openrouter_text(system_prompt: str, user_prompt: str) -> str:

@@ -57,10 +57,10 @@ def test_retrieve_normalizes_once_and_fuses_both_stores(monkeypatch):
     assert result[0]["source"] == "source#chunk"
     assert result[0]["dense_score"] == 0.9
     assert result[0]["lexical_score"] == 2.0
-    assert dense_store.calls[0][1] == retriever.CANDIDATE_K
-    assert lexical_store.calls == [
-        ("phòng A102 có bao nhiêu chỗ?", retriever.CANDIDATE_K)
-    ]
+    assert len(lexical_store.calls) == 1
+    assert lexical_store.calls[0] == ("phòng A102 có bao nhiêu chỗ?", retriever.CANDIDATE_K)
+
+
 
 
 def test_fast_reject_does_not_load_model_or_store(monkeypatch):

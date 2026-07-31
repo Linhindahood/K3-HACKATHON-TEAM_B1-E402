@@ -17,18 +17,19 @@ from backend.rag.prompt import (
     build_user_prompt,
 )
 
-FALLBACK_ANSWER = (
-    "Mình chưa tìm thấy thông tin chắc chắn cho câu hỏi này trong tài liệu hiện có. "
-    "Bạn có thể hỏi rõ hơn, hoặc liên hệ BTC/TA để được xác nhận nhé."
+from backend.rag.response_policy import (
+    NO_EVIDENCE_ANSWER,
+    PROVIDER_FAILURE_ANSWER,
+    strip_internal_leakage,
 )
-PROVIDER_FAILURE_ANSWER = (
-    "Mình đã tìm thấy tài liệu liên quan nhưng hiện chưa thể tạo câu trả lời. "
-    "Bạn vui lòng thử lại sau nhé."
-)
+
+FALLBACK_ANSWER = NO_EVIDENCE_ANSWER
+
 
 
 def _fallback() -> dict:
-    return {"answer": FALLBACK_ANSWER, "sources": [], "has_evidence": False}
+    return {"answer": NO_EVIDENCE_ANSWER, "sources": [], "has_evidence": False}
+
 
 
 def generate(question: str, passages: list[dict]) -> dict:
