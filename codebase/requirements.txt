@@ -8,6 +8,7 @@ bm25s==0.3.9
 faiss-cpu>=1.8
 numpy>=1.26
 sentence-transformers[onnx]>=5.0,<6.0
+Pillow>=12.0,<13.0
 # GPU deployment: use sentence-transformers[onnx-gpu] instead of the ONNX CPU extra.
 
 # LLM providers — API key thuần, không train model

@@ -59,6 +59,45 @@ def test_answer_question_fast_path_for_greeting(monkeypatch):
     assert "Chào bạn" in result["answer"]
 
 
+def test_answer_question_location_branch_returns_text_and_rendered_media(
+    monkeypatch,
+):
+    monkeypatch.setattr(
+        pipeline,
+        "route_query",
+        lambda question: (
+            pipeline.Intent.FACTUAL,
+            "đi từ tòa E tới tòa A",
+            True,
+        ),
+    )
+    monkeypatch.setattr(
+        pipeline,
+        "retrieve",
+        lambda *args, **kwargs: (_ for _ in ()).throw(
+            AssertionError("Location branch must not call text retrieval")
+        ),
+    )
+    monkeypatch.setattr(
+        pipeline,
+        "generate_vision_directions",
+        lambda question, origin, destination: {
+            "answer": f"{origin} -> {destination}",
+            "sources": ["1_map.png#route-graph-v1"],
+            "has_evidence": True,
+            "media": [{"local_path": "_generated/route-test.png"}],
+        },
+    )
+
+    result = pipeline.answer_question("Đi từ tòa E tới tòa A")
+
+    assert result["has_evidence"] is True
+    assert result["intent"] == "factual"
+    assert result["media"][0]["local_path"].startswith("_generated/")
+    assert "tòa E" in result["answer"]
+    assert "tòa A" in result["answer"]
+
+
 
 def test_pipeline_warm_up_delegates_to_retriever(monkeypatch):
     expected = {"chunk_count": 89, "lexical_chunk_count": 89}

@@ -1,0 +1,318 @@
+{
+  "version": "route-graph-v1",
+  "map": {
+    "filename": "1_map.png",
+    "width": 1254,
+    "height": 1254
+  },
+  "nodes": {
+    "main_gate": {
+      "label": "Cổng Đại Lễ",
+      "point": [456, 1210],
+      "aliases": ["cổng đại lễ", "cong dai le", "cổng chính", "cong chinh", "main gate"],
+      "landmark": true
+    },
+    "coral_gate": {
+      "label": "Cổng San Hô",
+      "point": [456, 70],
+      "aliases": ["cổng san hô", "cong san ho", "coral gate"],
+      "landmark": true
+    },
+    "building_a": {
+      "label": "Tòa A",
+      "point": [550, 610],
+      "aliases": ["tòa a", "toa a", "thư viện", "thu vien", "library"],
+      "landmark": true
+    },
+    "building_b": {
+      "label": "Tòa B",
+      "point": [610, 560],
+      "aliases": ["tòa b", "toa b"],
+      "landmark": true
+    },
+    "building_c": {
+      "label": "Tòa C",
+      "point": [370, 710],
+      "aliases": ["tòa c", "toa c"],
+      "landmark": true
+    },
+    "building_e": {
+      "label": "Tòa E",
+      "point": [610, 760],
+      "aliases": ["tòa e", "toa e", "e-hills", "e hills"],
+      "landmark": true
+    },
+    "building_f": {
+      "label": "Tòa F",
+      "point": [678, 800],
+      "aliases": ["tòa f", "toa f", "trung tâm mô phỏng", "trung tam mo phong"],
+      "landmark": true
+    },
+    "building_g": {
+      "label": "Tòa G",
+      "point": [460, 565],
+      "aliases": ["tòa g", "toa g"],
+      "landmark": true
+    },
+    "building_h": {
+      "label": "Tòa H",
+      "point": [312, 535],
+      "aliases": ["tòa h", "toa h", "thư viện ảo", "thu vien ao"],
+      "landmark": true
+    },
+    "building_i": {
+      "label": "Tòa I",
+      "point": [520, 710],
+      "aliases": ["tòa i", "toa i", "truyền thông", "truyen thong"],
+      "landmark": true
+    },
+    "building_j": {
+      "label": "Tòa J",
+      "point": [1098, 315],
+      "aliases": ["tòa j", "toa j", "ký túc xá", "ky tuc xa", "dormitory"],
+      "landmark": true
+    },
+    "building_k": {
+      "label": "Tòa K",
+      "point": [870, 315],
+      "aliases": ["tòa k", "toa k", "nhà phức hợp thể thao", "nha phuc hop the thao"],
+      "landmark": true
+    },
+    "building_l": {
+      "label": "Tòa L",
+      "point": [730, 315],
+      "aliases": ["tòa l", "toa l"],
+      "landmark": true
+    },
+    "parking": {
+      "label": "Bãi gửi xe",
+      "point": [225, 590],
+      "aliases": ["bãi gửi xe", "bai gui xe", "bãi xe", "bai xe", "parking"],
+      "landmark": true
+    },
+    "stadium": {
+      "label": "Sân vận động",
+      "point": [600, 405],
+      "aliases": ["sân vận động", "san van dong", "stadium"],
+      "landmark": true
+    },
+    "south_plaza": {
+      "label": "Lối vào Quảng trường",
+      "point": [456, 1165],
+      "aliases": [],
+      "landmark": false
+    },
+    "central_south": {
+      "label": "Lối đi phía đông khu tư vấn",
+      "point": [650, 1000],
+      "aliases": [],
+      "landmark": false
+    },
+    "central_east": {
+      "label": "Nút giao Tòa E - Tòa F",
+      "point": [670, 780],
+      "aliases": [],
+      "landmark": false
+    },
+    "central_mid_east": {
+      "label": "Lối đi phía đông Tòa A",
+      "point": [700, 610],
+      "aliases": [],
+      "landmark": false
+    },
+    "central_north_east": {
+      "label": "Lối đi phía đông khu trung tâm",
+      "point": [700, 420],
+      "aliases": [],
+      "landmark": false
+    },
+    "central_north_mid": {
+      "label": "Lối đi phía bắc Tòa G",
+      "point": [520, 420],
+      "aliases": [],
+      "landmark": false
+    },
+    "west_north": {
+      "label": "Lối đi phía bắc Tòa H",
+      "point": [220, 420],
+      "aliases": [],
+      "landmark": false
+    },
+    "west_mid": {
+      "label": "Lối đi phía tây Tòa C",
+      "point": [220, 620],
+      "aliases": [],
+      "landmark": false
+    },
+    "east_north": {
+      "label": "Nút giao khu thể thao",
+      "point": [790, 350],
+      "aliases": [],
+      "landmark": false
+    },
+    "east_k": {
+      "label": "Lối vào Tòa K",
+      "point": [870, 350],
+      "aliases": [],
+      "landmark": false
+    },
+    "east_j": {
+      "label": "Lối vào Tòa J",
+      "point": [1098, 350],
+      "aliases": [],
+      "landmark": false
+    }
+  },
+  "edges": [
+    {
+      "from": "main_gate",
+      "to": "south_plaza",
+      "points": [[456, 1210], [456, 1165]],
+      "instruction": "Đi qua khu vực check-in để vào Quảng trường."
+    },
+    {
+      "from": "south_plaza",
+      "to": "central_south",
+      "points": [[456, 1165], [560, 1120], [650, 1000]],
+      "instruction": "Đi dọc phía đông khu Quảng trường và khu tư vấn."
+    },
+    {
+      "from": "central_south",
+      "to": "central_east",
+      "points": [[650, 1000], [670, 900], [670, 780]],
+      "instruction": "Tiếp tục theo lối đi phía đông khu trung tâm."
+    },
+    {
+      "from": "central_east",
+      "to": "building_e",
+      "points": [[670, 780], [640, 770], [610, 760]],
+      "instruction": "Rẽ vào lối tiếp cận Tòa E."
+    },
+    {
+      "from": "central_east",
+      "to": "building_f",
+      "points": [[670, 780], [678, 800]],
+      "instruction": "Đi theo lối cạnh Tòa E để tới Tòa F."
+    },
+    {
+      "from": "central_east",
+      "to": "building_i",
+      "points": [[670, 780], [560, 780], [520, 750], [520, 710]],
+      "instruction": "Đi theo lối phía nam rồi tiếp cận Tòa I từ phía đông."
+    },
+    {
+      "from": "central_east",
+      "to": "central_mid_east",
+      "points": [[670, 780], [700, 700], [700, 610]],
+      "instruction": "Đi lên lối phía đông của cụm Tòa A và Tòa E."
+    },
+    {
+      "from": "central_mid_east",
+      "to": "building_a",
+      "points": [[700, 610], [620, 610], [550, 610]],
+      "instruction": "Rẽ về phía tây để tới lối vào Tòa A."
+    },
+    {
+      "from": "central_mid_east",
+      "to": "building_b",
+      "points": [[700, 610], [700, 560], [610, 560]],
+      "instruction": "Đi về phía bắc rồi rẽ vào Tòa B."
+    },
+    {
+      "from": "central_mid_east",
+      "to": "central_north_east",
+      "points": [[700, 610], [700, 500], [700, 420]],
+      "instruction": "Tiếp tục theo lối phía đông khu trung tâm."
+    },
+    {
+      "from": "central_north_east",
+      "to": "central_north_mid",
+      "points": [[700, 420], [600, 420], [520, 420]],
+      "instruction": "Đi theo lối phía bắc các tòa nhà trung tâm."
+    },
+    {
+      "from": "central_north_mid",
+      "to": "building_g",
+      "points": [[520, 420], [520, 565], [460, 565]],
+      "instruction": "Đi xuống cạnh phía đông rồi tới lối vào Tòa G."
+    },
+    {
+      "from": "central_north_mid",
+      "to": "stadium",
+      "points": [[520, 420], [600, 420], [600, 405]],
+      "instruction": "Đi về phía đông bắc để tới Sân vận động."
+    },
+    {
+      "from": "central_north_mid",
+      "to": "coral_gate",
+      "points": [[520, 420], [456, 420], [456, 250], [456, 70]],
+      "instruction": "Đi thẳng theo trục phía bắc để tới Cổng San Hô."
+    },
+    {
+      "from": "central_north_mid",
+      "to": "west_north",
+      "points": [[520, 420], [370, 420], [220, 420]],
+      "instruction": "Đi theo hành lang phía bắc về phía Tòa H."
+    },
+    {
+      "from": "west_north",
+      "to": "building_h",
+      "points": [[220, 420], [220, 540], [312, 540], [312, 535]],
+      "instruction": "Đi xuống lối phía tây rồi rẽ vào Tòa H."
+    },
+    {
+      "from": "west_north",
+      "to": "west_mid",
+      "points": [[220, 420], [220, 520], [220, 620]],
+      "instruction": "Tiếp tục theo lối phía tây khu trung tâm."
+    },
+    {
+      "from": "west_mid",
+      "to": "parking",
+      "points": [[220, 620], [225, 590]],
+      "instruction": "Rẽ vào Bãi gửi xe."
+    },
+    {
+      "from": "west_mid",
+      "to": "building_c",
+      "points": [[220, 620], [220, 710], [300, 710], [370, 710]],
+      "instruction": "Đi xuống rồi rẽ về phía đông để tới Tòa C."
+    },
+    {
+      "from": "central_north_east",
+      "to": "east_north",
+      "points": [[700, 420], [750, 380], [790, 350]],
+      "instruction": "Đi theo lối phía đông bắc tới khu thể thao."
+    },
+    {
+      "from": "east_north",
+      "to": "building_l",
+      "points": [[790, 350], [760, 350], [730, 315]],
+      "instruction": "Rẽ về phía tây bắc để tới Tòa L."
+    },
+    {
+      "from": "east_north",
+      "to": "east_k",
+      "points": [[790, 350], [870, 350]],
+      "instruction": "Đi về phía đông tới lối vào Tòa K."
+    },
+    {
+      "from": "east_k",
+      "to": "building_k",
+      "points": [[870, 350], [870, 315]],
+      "instruction": "Đi vào Tòa K."
+    },
+    {
+      "from": "east_k",
+      "to": "east_j",
+      "points": [[870, 350], [980, 350], [1098, 350]],
+      "instruction": "Tiếp tục theo lối phía đông tới khu Ký túc xá."
+    },
+    {
+      "from": "east_j",
+      "to": "building_j",
+      "points": [[1098, 350], [1098, 315]],
+      "instruction": "Đi vào Tòa J."
+    }
+  ]
+}
