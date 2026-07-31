@@ -20,6 +20,8 @@ class AskResponse(BaseModel):
     answer: str
     sources: list[str]
     has_evidence: bool
+    intent: str = ""
+    media: list[dict] = []
 
 
 @router.post("/ask", response_model=AskResponse)
@@ -43,4 +45,6 @@ def ask(payload: AskRequest) -> AskResponse:
         answer=result.get("answer", ""),
         sources=result.get("sources", []),
         has_evidence=result.get("has_evidence", False),
+        intent=result.get("intent", ""),
+        media=result.get("media", []),
     )

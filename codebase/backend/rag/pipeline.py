@@ -12,15 +12,15 @@ from backend.rag.router import Intent, route_query
 
 def answer_question(question: str) -> dict:
     """Route user question, handle fast path, vision directions branch, or retrieve & generate grounded answer."""
-    intent, search_query = route_query(question)
+    intent, search_query, is_location = route_query(question)
     if intent != Intent.FACTUAL:
         response = get_deterministic_response(intent)
         response["intent"] = intent.value
         return response
 
-    # Check for dedicated Vision Directions Branch
-    origin, destination, is_loc = parse_direction_nodes(question)
-    if is_loc:
+    # Dedicated Vision Directions Branch (LLM-detected location query)
+    if is_location:
+        origin, destination = parse_direction_nodes(question, search_query)
         response = generate_vision_directions(question, origin, destination)
         response["intent"] = intent.value
         return response

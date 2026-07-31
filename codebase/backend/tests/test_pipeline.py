@@ -12,7 +12,7 @@ def test_answer_question_coordinates_retrieval_then_generation(monkeypatch):
         "sources": ["source#chunk"],
         "has_evidence": True,
     }
-    monkeypatch.setattr(pipeline, "route_query", lambda q: (pipeline.Intent.FACTUAL, q))
+    monkeypatch.setattr(pipeline, "route_query", lambda q: (pipeline.Intent.FACTUAL, q, False))
     monkeypatch.setattr(
         pipeline,
         "retrieve",
