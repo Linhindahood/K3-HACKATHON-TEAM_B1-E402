@@ -85,6 +85,29 @@ def _gemini_text(system_prompt: str, user_prompt: str) -> str:
     return response.text or ""
 
 
+def _openai_vision_text(system_prompt: str, user_prompt: str, image_base64: str) -> str:
+    client = _get_openai_client()
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {
+            "role": "user",
+            "content": [
+                {"type": "text", "text": user_prompt},
+                {
+                    "type": "image_url",
+                    "image_url": {"url": f"data:image/png;base64,{image_base64}"},
+                },
+            ],
+        },
+    ]
+    response = client.chat.completions.create(
+        model=_require(config.LLM_MODEL, "LLM_MODEL"),
+        messages=messages,
+        max_tokens=config.LLM_MAX_OUTPUT_TOKENS,
+    )
+    return response.choices[0].message.content or ""
+
+
 def generate_text(system_prompt: str, user_prompt: str) -> str:
     providers = {
         "openai": _openai_text,
@@ -104,3 +127,19 @@ def generate_text(system_prompt: str, user_prompt: str) -> str:
     if not answer:
         raise LLMProviderError(f"{provider} returned an empty response")
     return answer
+
+
+def generate_vision_text(system_prompt: str, user_prompt: str, image_base64: str) -> str:
+    """Generate text answer using vision capabilities with image base64 input."""
+    provider = config.LLM_PROVIDER.casefold()
+    if provider == "openai":
+        try:
+            answer = _openai_vision_text(system_prompt, user_prompt, image_base64).strip()
+            if answer:
+                return answer
+        except Exception as exc:
+            raise LLMProviderError(f"Vision provider {provider} generation failed") from exc
+
+    # Fallback to standard text generation if vision provider call fails or unsupported
+    return generate_text(system_prompt, user_prompt)
+
