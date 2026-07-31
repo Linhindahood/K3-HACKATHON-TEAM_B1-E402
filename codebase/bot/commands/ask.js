@@ -42,8 +42,13 @@ async function handleQuestion(message) {
       status: 'success',
     });
 
-    const embed = formatAnswer(data.answer, data.sources);
-    await message.channel.send({ embeds: [embed] });
+    // Format câu trả lời thành Discord Embed kèm ảnh (files) nếu có
+    const { embed, files } = formatAnswer(data.answer, data.sources, data.media, data.intent);
+
+    await message.channel.send({
+      embeds: [embed],
+      files: files.length > 0 ? files : undefined,
+    });
   } catch (error) {
     const responseTimeMs = Date.now() - startTime;
 
@@ -73,4 +78,3 @@ client.on('messageCreate', async (message) => {
 module.exports = {
   handleQuestion,
 };
-
