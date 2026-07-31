@@ -10,6 +10,7 @@ def test_ask_route_returns_pipeline_contract(monkeypatch):
         "sources": ["source#chunk"],
         "has_evidence": True,
         "intent": "general",
+        "media": [],
     }
     if hasattr(routes, "rag_pipeline"):
         monkeypatch.setattr(

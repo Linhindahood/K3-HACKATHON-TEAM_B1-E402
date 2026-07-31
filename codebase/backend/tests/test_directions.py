@@ -1,24 +1,22 @@
-"""Tests for direction query node parsing and location detection V1."""
+"""Tests for direction query node parsing V2 (LLM-driven, no rule-based keywords)."""
 from __future__ import annotations
 
-from backend.rag.directions import is_location_query, parse_direction_nodes
-
-
-def test_is_location_query_detects_keywords():
-    assert is_location_query("Thư viện ở đâu?") is True
-    assert is_location_query("Chỉ đường cho tôi tới Canteen") is True
-    assert is_location_query("Xem bản đồ VinUni") is True
-    assert is_location_query("Nội quy khóa học là gì?") is False
+from backend.rag.directions import parse_direction_nodes
 
 
 def test_parse_direction_nodes_extracts_explicit_origin_and_destination():
-    origin, destination, is_loc = parse_direction_nodes("Từ Ký túc xá đến Thư viện đi thế nào?")
-    assert is_loc is True
-    assert "Ký túc xá" in origin
-    assert "Thư viện" in destination
+    origin, destination = parse_direction_nodes(
+        "Từ Ký túc xá đến Thư viện đi thế nào?",
+        search_query="từ ký túc xá đến thư viện đi thế nào",
+    )
+    assert "ký túc xá" in origin.casefold()
+    assert "thư viện" in destination.casefold()
 
 
 def test_parse_direction_nodes_defaults_to_main_gate_when_origin_missing():
-    origin, destination, is_loc = parse_direction_nodes("Đường tới thư viện")
-    assert is_loc is True
+    origin, destination = parse_direction_nodes(
+        "toa A o dau",
+        search_query="tòa A ở đâu",
+    )
     assert "Cổng chính" in origin
+    assert "tòa A ở đâu" in destination

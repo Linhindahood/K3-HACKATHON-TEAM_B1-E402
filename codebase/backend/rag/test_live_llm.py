@@ -30,6 +30,12 @@ TEST_QUERIES = [
     ("Factual Accentless", "cach dat phong thu vien nhu the nao"),
     ("Factual Abbreviation", "phg A102 chua duoc bao nhieu nguoi"),
     ("Factual English", "where is the library located in campus"),
+    # Direction / Location queries
+    ("Direction (no accent)", "chi duong toi thu vien"),
+    ("Direction (from-to)", "di tu cong dai le toi canteen the nao"),
+    ("Location (no accent)", "toa A o dau"),
+    ("Location (Vietnamese)", "thư viện nằm ở chỗ nào"),
+    ("Factual NOT location", "giờ mở cửa thư viện tháng 9"),
 ]
 
 
@@ -42,9 +48,10 @@ def main():
         print(f"\n👉 [{category}] Input: '{question}'")
 
         # 1. Test Router with Real LLM API
-        intent, search_query = route_query(question, use_llm=True)
+        intent, search_query, is_location = route_query(question, use_llm=True)
         print(f"   ├─ Intent: {intent.value}")
         print(f"   ├─ Enhanced Search Query: {search_query}")
+        print(f"   ├─ Is Location: {is_location}")
 
         # 2. Test Query Variants
         variants = generate_query_variants(question, search_query=search_query)
@@ -52,9 +59,16 @@ def main():
 
         # 3. Test Full Pipeline Response
         response = answer_question(question)
+        print(f"   ├─ Intent (pipeline): {response.get('intent')}")
         print(f"   ├─ Has Evidence: {response.get('has_evidence')}")
         print(f"   ├─ Sources: {response.get('sources')}")
-        print(f"   └─ Answer: {response.get('answer')[:120]}...")
+        media = response.get("media", [])
+        if media:
+            print(f"   ├─ Media: {[m.get('asset_id', m.get('title', '?')) for m in media]}")
+        else:
+            print(f"   ├─ Media: (none)")
+        answer_preview = response.get("answer", "")[:200]
+        print(f"   └─ Answer: {answer_preview}...")
 
     print("\n" + "=" * 70)
     print("LIVE LLM VERIFICATION COMPLETED SUCCESSFULLY!")
