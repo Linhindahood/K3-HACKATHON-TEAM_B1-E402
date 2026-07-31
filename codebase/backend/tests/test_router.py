@@ -26,7 +26,7 @@ def test_fast_path_routes_simple_greetings():
         "lam on chi toi cach dat phong thu vien",
     ],
 )
-def test_fast_path_routes_high_confidence_booking_guides_as_factual(
+def test_booking_guides_use_llm_without_being_blocked(
     monkeypatch,
     question,
 ):
@@ -34,14 +34,35 @@ def test_fast_path_routes_high_confidence_booking_guides_as_factual(
     monkeypatch.setattr(
         router,
         "generate_text",
-        lambda *args: calls.append(args) or '{"intent": "help"}',
+        lambda *args: calls.append(args)
+        or (
+            '{"intent": "factual", '
+            '"search_query": "hướng dẫn đặt phòng thư viện bằng Microsoft Outlook"}'
+        ),
     )
 
     intent, search_query, _ = route_query(question, use_llm=True)
 
     assert intent == Intent.FACTUAL
     assert search_query == "hướng dẫn đặt phòng thư viện bằng Microsoft Outlook"
-    assert calls == []
+    assert len(calls) == 1
+
+
+def test_llm_help_does_not_block_a_contextual_booking_question(monkeypatch):
+    question = (
+        "Nhóm mình đang có nhu cầu book phòng họp cho khoảng 20 người, "
+        "hãy hướng dẫn mình quy trình"
+    )
+    monkeypatch.setattr(
+        router,
+        "generate_text",
+        lambda *args: '{"intent": "help"}',
+    )
+
+    intent, search_query, _ = route_query(question, use_llm=True)
+
+    assert intent == Intent.FACTUAL
+    assert search_query == question
 
 
 @pytest.mark.parametrize(
