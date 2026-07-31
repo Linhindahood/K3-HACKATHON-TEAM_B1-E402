@@ -31,3 +31,13 @@ def test_retrieval_handles_enhanced_search_query():
     )
     assert len(results) > 0
     assert any("A102" in res["text"] for res in results)
+
+
+def test_retrieval_prioritizes_outlook_booking_instructions():
+    results = retrieve(
+        "Cách đặt phòng trong thư viện như thế nào?",
+        top_k=3,
+        search_query="hướng dẫn đặt phòng thư viện bằng Microsoft Outlook",
+    )
+
+    assert results[0]["chunk_id"] == "huong-dan-dat-phong-bang-microsoft-outlook"

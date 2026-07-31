@@ -61,6 +61,56 @@ def test_retrieve_normalizes_once_and_fuses_both_stores(monkeypatch):
     assert lexical_store.calls[0] == ("phòng A102 có bao nhiêu chỗ?", retriever.CANDIDATE_K)
 
 
+def test_retrieve_keeps_highest_score_across_lexical_variants(monkeypatch):
+    class BookingDenseStore:
+        def search(self, query_vector: np.ndarray, top_k: int) -> list[dict]:
+            return [
+                {
+                    "text": "Hướng dẫn đặt phòng bằng Outlook",
+                    "source": "library#booking",
+                    "score": 0.8,
+                    "chunk_id": "booking",
+                }
+            ]
+
+    class VariantLexicalStore:
+        def search(self, query: str, top_k: int) -> list[dict]:
+            score = 9.0 if "Outlook" in query else 2.0
+            return [
+                {
+                    "text": "Hướng dẫn đặt phòng bằng Outlook",
+                    "source": "library#booking",
+                    "score": score,
+                    "chunk_id": "booking",
+                }
+            ]
+
+    monkeypatch.setattr(
+        retriever,
+        "embed_query",
+        lambda question: np.asarray([1.0, 0.0], dtype=np.float32),
+    )
+    monkeypatch.setattr(
+        retriever,
+        "get_dense_store",
+        lambda: BookingDenseStore(),
+    )
+    monkeypatch.setattr(
+        retriever,
+        "get_lexical_store",
+        lambda: VariantLexicalStore(),
+    )
+
+    result = retriever.retrieve(
+        "Cách đặt phòng?",
+        top_k=1,
+        search_query="Hướng dẫn đặt phòng bằng Outlook",
+    )
+
+    assert result[0]["chunk_id"] == "booking"
+    assert result[0]["lexical_score"] == 9.0
+
+
 
 
 def test_fast_reject_does_not_load_model_or_store(monkeypatch):

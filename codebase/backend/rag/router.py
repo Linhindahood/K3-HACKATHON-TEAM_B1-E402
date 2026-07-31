@@ -32,6 +32,31 @@ _FAST_IDENTITY_PATTERNS = [
     re.compile(r"^bạn\s+tên\s+là\s+gì$", re.IGNORECASE),
 ]
 
+_FAST_UNSUPPORTED_BOOKING_PATTERNS = [
+    re.compile(
+        r"^(?:đặt|dat|hủy|huy)\s+phòng\b.*\b"
+        r"(?:giúp|giup|hộ|ho)\s+(?:tôi|toi|mình|minh)\b",
+        re.IGNORECASE,
+    ),
+]
+
+_FAST_BOOKING_GUIDE_PATTERNS = [
+    re.compile(
+        r"\b(?:cách|cach)\s+(?:tự\s+)?(?:đặt|dat)\s+phòng\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\b(?:hướng dẫn|huong dan|làm thế nào|lam the nao|làm sao|lam sao)\b"
+        r".*\b(?:đặt|dat)\s+phòng\b",
+        re.IGNORECASE,
+    ),
+    re.compile(
+        r"\b(?:đặt|dat)\s+phòng\b.*"
+        r"\b(?:như thế nào|nhu the nao|ra sao)\b",
+        re.IGNORECASE,
+    ),
+]
+
 ROUTER_SYSTEM_PROMPT = """Bạn là bộ phân loại Intent và làm sạch từ khóa cho chatbot hỗ trợ VinAI.
 Phân loại câu hỏi của người dùng nằm trong thẻ <user_query> vào 1 trong các intent sau:
 - "greeting": Chào hỏi, xã giao, hỏi thăm thân mật.
@@ -76,6 +101,12 @@ def _fast_path_route(cleaned: str) -> Intent | None:
     for pattern in _FAST_IDENTITY_PATTERNS:
         if pattern.match(cleaned):
             return Intent.IDENTITY
+    for pattern in _FAST_UNSUPPORTED_BOOKING_PATTERNS:
+        if pattern.search(cleaned):
+            return Intent.UNSUPPORTED_ACTION
+    for pattern in _FAST_BOOKING_GUIDE_PATTERNS:
+        if pattern.search(cleaned):
+            return Intent.FACTUAL
     return None
 
 
@@ -91,7 +122,12 @@ def route_query(question: str, use_llm: bool = True) -> tuple[Intent, str | None
 
     fast_route = _fast_path_route(cleaned)
     if fast_route is not None:
-        return fast_route, None, False
+        search_query = (
+            "hướng dẫn đặt phòng thư viện bằng Microsoft Outlook"
+            if fast_route == Intent.FACTUAL
+            else None
+        )
+        return fast_route, search_query, False
 
     if not use_llm:
         return Intent.FACTUAL, cleaned, False

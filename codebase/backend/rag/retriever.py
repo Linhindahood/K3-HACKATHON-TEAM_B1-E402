@@ -37,19 +37,18 @@ def retrieve(
 
     # Multi-variant Lexical Search (BM25S)
     lexical_store = get_lexical_store()
-    lexical_results = []
-    seen_chunks = set()
+    lexical_by_chunk = {}
     for variant_query in variants.values():
         results = lexical_store.search(variant_query, candidate_k)
         for item in results:
-            chunk_id = item.get("chunk_id")
-            if chunk_id not in seen_chunks:
-                seen_chunks.add(chunk_id)
-                lexical_results.append(item)
+            chunk_id = item.get("chunk_id", item["source"])
+            current = lexical_by_chunk.get(chunk_id)
+            if current is None or item["score"] > current["score"]:
+                lexical_by_chunk[chunk_id] = item
 
     return fuse_results(
         dense_results,
-        lexical_results,
+        list(lexical_by_chunk.values()),
         top_k=top_k,
         dense_weight=DENSE_WEIGHT,
     )

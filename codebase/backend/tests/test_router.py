@@ -14,6 +14,32 @@ def test_fast_path_routes_simple_greetings():
     assert intent == Intent.IDENTITY
 
 
+def test_fast_path_distinguishes_booking_instructions_from_booking_for_user(
+    monkeypatch,
+):
+    calls = []
+    monkeypatch.setattr(
+        router,
+        "generate_text",
+        lambda *args: calls.append(args) or '{"intent": "help"}',
+    )
+
+    intent, search_query, _ = route_query(
+        "Cách đặt phòng trong thư viện như thế nào?",
+        use_llm=True,
+    )
+    assert intent == Intent.FACTUAL
+    assert search_query == "hướng dẫn đặt phòng thư viện bằng Microsoft Outlook"
+
+    intent, search_query, _ = route_query(
+        "Đặt phòng A101 giúp tôi với",
+        use_llm=True,
+    )
+    assert intent == Intent.UNSUPPORTED_ACTION
+    assert search_query is None
+    assert calls == []
+
+
 def test_llm_router_classifies_intents(monkeypatch):
     monkeypatch.setattr(
         router, "generate_text", lambda sys_prompt, prompt: '{"intent": "unsupported_action"}'
