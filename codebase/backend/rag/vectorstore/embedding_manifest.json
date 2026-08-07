@@ -1,8 +1,8 @@
 {
   "backend": "onnx",
-  "build_id": "cac01c5dc131d9e5",
+  "build_id": "c7c07cc8171bd45c",
   "chunk_count": 86,
-  "chunks_hash": "cac01c5dc131d9e5d71f335635ddca48ae8eabe7694a6995651d52f03532fbc6",
+  "chunks_hash": "c7c07cc8171bd45c838e1afafdfbd3fdaa973f9d9f9414bd1fa9a53012779e8f",
   "dimension": 384,
   "document_prefix": "passage: ",
   "dtype": "float32",
@@ -13,7 +13,7 @@
   "onnx_provider": "CPUExecutionProvider",
   "ordered_chunks": [
     {
-      "chunk_id": "lien-ket-vi-tri-co-so-vat-chat",
+      "chunk_id": "ban-do-vi-tri-co-so-vat-chat-vinuniversity",
       "content_hash": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     },
     {
